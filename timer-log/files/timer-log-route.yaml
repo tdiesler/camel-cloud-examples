@@ -1,0 +1,19 @@
+# Create by Kaoto
+# https://kaotoio.github.io/kaoto/
+- route:
+    id: route-4276
+    from:
+      id: from-1854
+      uri: timer:template
+      parameters:
+        includeMetadata: true
+        period: "1000"
+      steps:
+        - setBody:
+            id: setBody-2813
+            expression:
+              simple:
+                expression: '"Hello Yaml #${header.CamelTimerCounter}"'
+        - log:
+            id: log-3000
+            message: ${body}
