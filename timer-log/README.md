@@ -21,6 +21,26 @@ Next we use [Kaoto](https://kaotoio.github.io/kaoto/) to create a simple route l
 
 ![](./files/timer-log-route.png)
 
+## Updating the project
+
+We now use [camel-cloud](https://github.com/tdiesler/camel-cloud-utils) to update the project skeleton
+such that it can run the route definition that we created above. 
+
+```shell
+camel-cloud add integration ./files/timer-log-route.yaml
+
+2024/07/02 16:22:12 INFO Reading Camel Routes from: ./files/timer-log-route.yaml
+2024/07/02 16:22:12 INFO Reading Maven Project from: ./pom.xml
+2024/07/02 16:22:12 INFO Group ID: org.acme
+2024/07/02 16:22:12 INFO Artifact ID: timer-log
+2024/07/02 16:22:12 INFO Version: 1.0.0-SNAPSHOT
+2024/07/02 16:22:12 INFO Adding dependency: org.apache.camel.quarkus:camel-quarkus-timer
+2024/07/02 16:22:12 INFO Adding dependency: org.apache.camel.quarkus:camel-quarkus-log
+2024/07/02 16:22:12 INFO Updated: ./src/main/resources/routes/timer-log-route.yaml
+2024/07/02 16:22:12 INFO Updated: ./src/main/resources/application.properties
+2024/07/02 16:22:12 INFO Updated: ./pom.xml
+```
+
 ## Packaging and running the application
 
 The application can be packaged/run using:
