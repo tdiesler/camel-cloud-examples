@@ -18,6 +18,9 @@ bin/
 *.iml
 *.iws
 
+# JBang
+.camel-jbang/
+
 # Visual Studio Code
 .vscode
 .factorypath
