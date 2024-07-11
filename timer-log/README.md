@@ -40,7 +40,6 @@ camel kubernetes export timer-log-route.yaml \
 We can then package the application with an ordinary maven build.
 
 * [TODO] Perhaps set `-Dquarkus.container-image.build=true` by default
-* [TODO] Remove dependency on `quarkus-container-image-jib`
 
 ```shell
 ./mvnw clean package -Dquarkus.container-image.build=true
