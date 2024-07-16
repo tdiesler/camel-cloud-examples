@@ -30,8 +30,8 @@ We now export that project's with additional dependencies building with [Docker]
 ```shell 
 camel kubernetes export timer-log-route.yaml \
   --gav=examples:timer-log:1.0.0 \
-  --image-group=examples \
-  --deps=io.quarkus:quarkus-container-image-docker,io.quarkus:quarkus-minikube \
+  --dep=io.quarkus:quarkus-container-image-docker \
+  --dep=io.quarkus:quarkus-minikube \
   --runtime=quarkus
 ```
 
@@ -39,10 +39,8 @@ camel kubernetes export timer-log-route.yaml \
 
 We can then package the application with an ordinary maven build.
 
-* [TODO] Perhaps set `-Dquarkus.container-image.build=true` by default
-
 ```shell
-./mvnw clean package -Dquarkus.container-image.build=true
+./mvnw clean package
 ```
 
 We can now verify that the plain quarkus application runs as expected.
