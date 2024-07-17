@@ -25,13 +25,13 @@ Here the created route ...
       - log: "${body}"
 ```
 
-We now export that project's with additional dependencies building with [Docker](https://quarkus.io/extensions/io.quarkus/quarkus-container-image-docker/) and running on a local [Minikube](https://quarkus.io/extensions/io.quarkus/quarkus-minikube/) cluster.
+We now export that Camel Quarkus project with additional dependencies building with [Docker](https://quarkus.io/extensions/io.quarkus/quarkus-container-image-docker/).
 
 ```shell 
 camel kubernetes export timer-log-route.yaml \
   --gav=examples:timer-log:1.0.0 \
   --dep=io.quarkus:quarkus-container-image-docker \
-  --dep=io.quarkus:quarkus-minikube \
+  --trait container.imagePullPolicy=IfNotPresent \
   --runtime=quarkus
 ```
 
@@ -43,7 +43,7 @@ We can then package the application with an ordinary maven build.
 ./mvnw clean package
 ```
 
-We can now verify that the plain quarkus application runs as expected.
+We can now verify that the plain Java application runs as expected.
 
 ```shell
 java -jar target/quarkus-app/quarkus-run.jar
@@ -57,12 +57,12 @@ You can also run this application in plain Docker like this ...
 docker run --rm quay.io/examples/timer-log:1.0.0 
 ```
 
-## Deploy to Minikube 
+## Deploy on Kubernetes
 
 You can deploy/run this application on Minikube like this ...
 
 ```shell
-kubectl apply -f ./target/kubernetes/minikube.yml
+kubectl apply -f ./target/kubernetes/kubernetes.yml
 kubectl logs -f --tail 400  -l app.kubernetes.io/name=timer-log
 
 INFO exec -a "java" java -Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager -XX:MaxRAMPercentage=50.0 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError -cp "." -jar /deployments/quarkus-run.jar 
@@ -92,7 +92,7 @@ __  ____  __  _____   ___  __ ____  ______
 When done, you can delete the application like this ...
 
 ```shell
-kubectl delete deployment timer-log
+kubectl delete -f ./target/kubernetes/kubernetes.yml
 ```
 
 ## Related Guides
@@ -100,5 +100,4 @@ kubectl delete deployment timer-log
 - Kubernetes ([guide](https://quarkus.io/guides/kubernetes)): Generate Kubernetes resources from annotations
 - Camel Log ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/log.html)): Prints data form the routed message (such as body and headers) to the logger
 - Camel YAML DSL ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/yaml-dsl.html)): An YAML stack for parsing YAML route definitions
-- Minikube ([guide](https://quarkus.io/guides/kubernetes)): Generate Minikube resources from annotations
 - Camel Timer ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/timer.html)): Generate messages in specified intervals using java.util.Timer
