@@ -16,11 +16,11 @@
 
     <properties>
         <java.version>17</java.version>
-        <camel.springboot.container-image.insecure>false</camel.springboot.container-image.insecure>
         <camel.springboot.container-image.group>examples</camel.springboot.container-image.group>
-        <camel.springboot.container-image.registry>quay.io</camel.springboot.container-image.registry>
-        <camel.springboot.kubernetes.image-name>quay.io/examples/timer-log:1.0.0</camel.springboot.kubernetes.image-name>
-        <camel.springboot.kubernetes.image-pull-policy>if-not-present</camel.springboot.kubernetes.image-pull-policy>
+        <camel.springboot.kubernetes.image-name>examples/timer-log:1.0.0</camel.springboot.kubernetes.image-name>
+        <camel.springboot.kubernetes.ports.http.container-port>8080</camel.springboot.kubernetes.ports.http.container-port>
+        <camel.springboot.kubernetes.image-pull-policy>IfNotPresent</camel.springboot.kubernetes.image-pull-policy>
+        <camel.springboot.jkube.version>1.16.2</camel.springboot.jkube.version>
     </properties>
 
     <dependencyManagement>
@@ -123,31 +123,40 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>jib-maven-plugin</artifactId>
+                <groupId>org.eclipse.jkube</groupId>
+                <artifactId>kubernetes-maven-plugin</artifactId>
+                <version>${camel.springboot.jkube.version}</version>
                 <configuration>
-                    <from>
-                        <image>eclipse-temurin:17</image>
-                        <platforms>
-                            <platform>
-                                <architecture>amd64</architecture>
-                                <os>linux</os>
-                            </platform>
-                            <platform>
-                                <architecture>arm64</architecture>
-                                <os>linux</os>
-                            </platform>
-                        </platforms>
-                    </from>
-                    <to>
-                        <image>${camel.spring-boot.kubernetes.image-name}</image>
-                    </to>
-                    <allowInsecureRegistries>${camel.spring-boot.container-image.insecure}</allowInsecureRegistries>
+                    <imagePullPolicy>${camel.springboot.kubernetes.image-pull-policy}</imagePullPolicy>
+                    <buildStrategy>docker</buildStrategy>
+                    <images>
+                        <image>
+                            <name>${camel.springboot.kubernetes.image-name}</name>
+                            <build>
+                                <from>eclipse-temurin:17</from>
+                                <createImageOptions>
+                                    <platform>linux/amd64</platform>
+                                    <platform>linux/arm64</platform>
+                                </createImageOptions>
+                                <ports>
+                                    <port>${camel.springboot.kubernetes.ports.http.container-port}</port>
+                                </ports>
+                                <entryPoint>
+                                    <exec>
+                                        <arg>java</arg>
+                                        <arg>-jar</arg>
+                                        <arg>/maven/${project.artifactId}-${project.version}.jar</arg>
+                                    </exec>
+                                </entryPoint>
+                            </build>
+                        </image>
+                    </images>
                 </configuration>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>dockerBuild</goal>
+                            <goal>build</goal>
+                            <goal>resource</goal>
                         </goals>
                         <phase>package</phase>
                     </execution>
@@ -158,16 +167,16 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy-resources</id>
-                        <phase>process-resources</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
+                            <!-- For symmetry with Quarkus, copy kubernetes.yml to the same target location -->
                             <outputDirectory>${project.build.directory}/kubernetes</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/kubernetes</directory>
+                                    <directory>${project.build.directory}/classes/META-INF/jkube</directory>
                                 </resource>
                             </resources>
                         </configuration>

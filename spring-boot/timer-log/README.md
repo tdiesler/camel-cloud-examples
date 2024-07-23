@@ -51,7 +51,7 @@ java -jar target/timer-log-1.0.0.jar
 You can also run this application in plain Docker like this ...
 
 ```shell
-docker run --rm quay.io/examples/timer-log:1.0.0 
+docker run -it --rm examples/timer-log:1.0.0 
 ```
 
 ## Deploy on Kubernetes

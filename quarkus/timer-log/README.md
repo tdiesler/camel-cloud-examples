@@ -32,6 +32,7 @@ camel kubernetes export timer-log-route.yaml \
   --gav=examples:timer-log:1.0.0 \
   --dep=io.quarkus:quarkus-container-image-docker \
   --trait container.imagePullPolicy=IfNotPresent \
+  --image-registry=quay.io \
   --runtime=quarkus
 ```
 
@@ -54,7 +55,7 @@ java -jar target/quarkus-app/quarkus-run.jar
 You can also run this application in plain Docker like this ...
 
 ```shell
-docker run --rm quay.io/examples/timer-log:1.0.0 
+docker run -it --rm quay.io/examples/timer-log:1.0.0 
 ```
 
 ## Deploy on Kubernetes

@@ -3,23 +3,18 @@ kind: Deployment
 metadata:
   labels:
     camel.apache.org/integration: timer-log
-    app.kubernetes.io/name: timer-log
-    app.kubernetes.io/version: 1.0.0
+    app.kubernetes.io/runtime: camel
   name: timer-log
 spec:
   selector:
     matchLabels:
       camel.apache.org/integration: timer-log
-      app.kubernetes.io/name: timer-log
-      app.kubernetes.io/version: 1.0.0
   template:
     metadata:
       labels:
         camel.apache.org/integration: timer-log
-        app.kubernetes.io/name: timer-log
-        app.kubernetes.io/version: 1.0.0
     spec:
       containers:
-      - image: quay.io/examples/timer-log:1.0.0
+      - image: examples/timer-log:1.0.0
         imagePullPolicy: IfNotPresent
         name: timer-log

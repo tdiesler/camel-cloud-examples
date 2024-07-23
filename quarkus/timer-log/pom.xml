@@ -17,12 +17,13 @@
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.version>3.12.2</quarkus.platform.version>
-        <quarkus.container-image.insecure>false</quarkus.container-image.insecure>
         <quarkus.container-image.group>examples</quarkus.container-image.group>
         <quarkus.container-image.registry>quay.io</quarkus.container-image.registry>
-        <quarkus.container-image.build>true</quarkus.container-image.build>
+        <quarkus.container-image.insecure>false</quarkus.container-image.insecure>
         <quarkus.kubernetes.image-name>quay.io/examples/timer-log:1.0.0</quarkus.kubernetes.image-name>
+        <quarkus.kubernetes.ports.http.container-port>8080</quarkus.kubernetes.ports.http.container-port>
         <quarkus.kubernetes.image-pull-policy>if-not-present</quarkus.kubernetes.image-pull-policy>
+        <quarkus.container-image.build>true</quarkus.container-image.build>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.1.2</surefire-plugin.version>
     </properties>
