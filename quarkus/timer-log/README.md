@@ -25,7 +25,7 @@ Here the created route ...
       - log: "${body}"
 ```
 
-We now export that Camel Quarkus project with additional dependencies building with [Docker](https://quarkus.io/extensions/io.quarkus/quarkus-container-image-docker/).
+We now export the integration as a Camel Quarkus project with additional dependencies for building with [Docker](https://quarkus.io/extensions/io.quarkus/quarkus-container-image-docker/).
 
 ```shell 
 camel kubernetes export timer-log-route.yaml \

@@ -23,7 +23,7 @@ Here the created route ...
       - log: "${body}"
 ```
 
-We now export that Camel SpringBoot project.
+We now export the integration as a Camel SpringBoot project.
 
 ```shell 
 camel kubernetes export timer-log-route.yaml \
@@ -88,7 +88,6 @@ kubectl logs -f --tail 400  -l app.kubernetes.io/name=timer-log
 2024-07-17T11:06:01.400Z  INFO 1 --- [ - timer://yaml] route1                                   : Hello Camel from route1
 2024-07-17T11:06:02.389Z  INFO 1 --- [ - timer://yaml] route1                                   : Hello Camel from route1
 2024-07-17T11:06:03.389Z  INFO 1 --- [ - timer://yaml] route1                                   : Hello Camel from route1
-2024-07-17T11:06:04.391Z  INFO 1 --- [ - timer://yaml] route1                                   : Hello Camel from route1
 ```
 
 ## Delete the application

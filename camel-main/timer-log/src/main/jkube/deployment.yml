@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    camel.apache.org/integration: timer-log
+    app.kubernetes.io/runtime: camel
+  name: timer-log
+spec:
+  selector:
+    matchLabels:
+      camel.apache.org/integration: timer-log
+  template:
+    metadata:
+      labels:
+        camel.apache.org/integration: timer-log
+    spec:
+      containers:
+      - image: examples/timer-log:1.0.0
+        imagePullPolicy: IfNotPresent
+        name: timer-log
