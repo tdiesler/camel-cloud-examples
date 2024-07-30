@@ -11,13 +11,13 @@
     </parent>
 
     <groupId>examples</groupId>
-    <artifactId>timer-log</artifactId>
+    <artifactId>roll-dice</artifactId>
     <version>1.0.0</version>
 
     <properties>
         <java.version>17</java.version>
         <camel.springboot.container-image.group>examples</camel.springboot.container-image.group>
-        <camel.springboot.kubernetes.image-name>examples/timer-log:1.0.0</camel.springboot.kubernetes.image-name>
+        <camel.springboot.kubernetes.image-name>examples/roll-dice:1.0.0</camel.springboot.kubernetes.image-name>
         <camel.springboot.kubernetes.ports.http.container-port>8080</camel.springboot.kubernetes.ports.http.container-port>
         <camel.springboot.kubernetes.image-pull-policy>IfNotPresent</camel.springboot.kubernetes.image-pull-policy>
         <camel.springboot.jkube.version>1.16.2</camel.springboot.jkube.version>
@@ -94,10 +94,6 @@
         <dependency>
             <groupId>org.apache.camel.springboot</groupId>
             <artifactId>camel-rest-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel.springboot</groupId>
-            <artifactId>camel-timer-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.camel.springboot</groupId>

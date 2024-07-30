@@ -29,6 +29,7 @@ We now export the integration as a native Camel project.
 camel kubernetes export timer-log-route.yaml \
   --gav=examples:timer-log:1.0.0 \
   --trait container.imagePullPolicy=IfNotPresent \
+  --trait service.type=NodePort \
   --runtime=camel-main
 ```
 
@@ -51,7 +52,7 @@ java -jar target/timer-log-1.0.0.jar
 You can also run this application in plain Docker like this ...
 
 ```shell
-docker run -it --rm examples/timer-log:1.0.0 
+docker run -it --rm -p 8080:8080 examples/timer-log:1.0.0 
 ```
 
 ## Deploy on Kubernetes
@@ -91,7 +92,7 @@ kubectl delete -f ./target/kubernetes/kubernetes.yml
 
 ## Related Guides
 
-- Kubernetes ([guide](https://quarkus.io/guides/kubernetes)): Generate Kubernetes resources from annotations
-- Camel Log ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/log.html)): Prints data form the routed message (such as body and headers) to the logger
-- Camel YAML DSL ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/yaml-dsl.html)): An YAML stack for parsing YAML route definitions
-- Camel Timer ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/timer.html)): Generate messages in specified intervals using java.util.Timer
+- Kubernetes ([guide](https://camel.apache.org/manual/camel-jbang-kubernetes.html)): Export Camel project and generate Kubernetes resources
+- Camel Log ([guide](https://camel.apache.org/components/log-component.html)): Prints data form the routed message (such as body and headers) to the logger
+- Camel YAML DSL ([guide](https://camel.apache.org/components/others/yaml-dsl.html)): An YAML stack for parsing YAML route definitions
+- Camel Timer ([guide](https://camel.apache.org/components/timer-component.html)): Generate messages in specified intervals using java.util.Timer

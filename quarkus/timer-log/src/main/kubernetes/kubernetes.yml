@@ -15,6 +15,27 @@ spec:
         camel.apache.org/integration: timer-log
     spec:
       containers:
-      - image: quay.io/examples/timer-log:1.0.0
+      - image: examples/timer-log:1.0.0
         imagePullPolicy: IfNotPresent
         name: timer-log
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    camel.apache.org/integration: timer-log
+    app.kubernetes.io/runtime: camel
+  name: timer-log
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selector:
+    camel.apache.org/integration: timer-log
+  type: NodePort

@@ -18,3 +18,7 @@ spec:
       - image: examples/timer-log:1.0.0
         imagePullPolicy: IfNotPresent
         name: timer-log
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP

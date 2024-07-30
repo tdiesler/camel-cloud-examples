@@ -2,22 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    camel.apache.org/integration: timer-log
+    camel.apache.org/integration: roll-dice
     app.kubernetes.io/runtime: camel
-  name: timer-log
+  name: roll-dice
 spec:
   selector:
     matchLabels:
-      camel.apache.org/integration: timer-log
+      camel.apache.org/integration: roll-dice
   template:
     metadata:
       labels:
-        camel.apache.org/integration: timer-log
+        camel.apache.org/integration: roll-dice
     spec:
       containers:
-      - image: examples/timer-log:1.0.0
+      - image: examples/roll-dice:1.0.0
         imagePullPolicy: IfNotPresent
-        name: timer-log
+        name: roll-dice
         ports:
         - containerPort: 8080
           name: http
