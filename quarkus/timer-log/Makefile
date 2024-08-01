@@ -10,7 +10,6 @@ clean:
 generate:
 	@jbang camel kubernetes export timer-log-route.yaml \
 	   --gav=examples:timer-log:1.0.0 \
-	   --dep=io.quarkus:quarkus-container-image-docker \
 	   --trait container.imagePullPolicy=IfNotPresent \
 	   --trait service.type=NodePort \
 	   --runtime=quarkus

@@ -30,7 +30,6 @@ We now export the integration as a Camel Quarkus project with additional depende
 ```shell 
 camel kubernetes export timer-log-route.yaml \
   --gav=examples:timer-log:1.0.0 \
-  --dep=io.quarkus:quarkus-container-image-docker \
   --trait container.imagePullPolicy=IfNotPresent \
   --trait service.type=NodePort \
   --runtime=quarkus
@@ -47,7 +46,7 @@ We can then package the application with an ordinary maven build.
 We can now verify that the plain Java application runs as expected.
 
 ```shell
-java -jar target/quarkus-app/quarkus-run.jar
+java -jar target/timer-log-1.0.0.jar
 ```
 
 ## Running the Docker container
