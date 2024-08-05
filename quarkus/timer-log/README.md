@@ -92,7 +92,7 @@ __  ____  __  _____   ___  __ ____  ______
 When done, you can delete the application like this ...
 
 ```shell
-kubectl delete -f ./target/kubernetes/kubernetes.yml
+kubectl delete --all -f ./target/kubernetes/kubernetes.yml
 ```
 
 ## Related Guides

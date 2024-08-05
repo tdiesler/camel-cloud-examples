@@ -11,7 +11,7 @@ First we create a simple Camel route that shows the outcome of rolling a dice.
     uri: 'platform-http:/roll-dice'
     steps:
       - set-body:
-          simple: 'roll: $simple{random(1,6)}'
+          simple: 'roll: $simple{random(1,7)}'
 ```
 
 We now export the integration as a Camel SpringBoot project.
@@ -87,7 +87,7 @@ kubectl logs -f --tail 400  -l app.kubernetes.io/name=roll-dice
 When done, you can delete the application like this ...
 
 ```shell
-kubectl delete -f ./target/kubernetes/kubernetes.yml
+kubectl delete --all -f ./target/kubernetes/kubernetes.yml
 ```
 
 ## Related Guides

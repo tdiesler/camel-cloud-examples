@@ -20,7 +20,7 @@
         <camel.springboot.kubernetes.image-name>examples/timer-log:1.0.0</camel.springboot.kubernetes.image-name>
         <camel.springboot.kubernetes.ports.http.container-port>8080</camel.springboot.kubernetes.ports.http.container-port>
         <camel.springboot.kubernetes.image-pull-policy>IfNotPresent</camel.springboot.kubernetes.image-pull-policy>
-        <camel.springboot.jkube.version>1.16.2</camel.springboot.jkube.version>
+        <jkube.version>1.16.2</jkube.version>
     </properties>
 
     <dependencyManagement>
@@ -125,7 +125,7 @@
             <plugin>
                 <groupId>org.eclipse.jkube</groupId>
                 <artifactId>kubernetes-maven-plugin</artifactId>
-                <version>${camel.springboot.jkube.version}</version>
+                <version>${jkube.version}</version>
                 <configuration>
                     <imagePullPolicy>${camel.springboot.kubernetes.image-pull-policy}</imagePullPolicy>
                     <buildStrategy>docker</buildStrategy>

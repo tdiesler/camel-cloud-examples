@@ -14,15 +14,15 @@ generate:
 	   --trait service.type=NodePort \
 	   --runtime=quarkus
 
-java-run:
+run-java:
 	@java -jar target/timer-log-1.0.0.jar
 
-docker-run:
+run-docker:
 	@docker run -it --rm -p 8080:8080 examples/timer-log:1.0.0
 
-k8s-apply:
+run-k8s:
 	@kubectl apply -f ./target/kubernetes/kubernetes.yml && sleep 3 && \
 	 kubectl logs -f --tail 400 -l app.kubernetes.io/name=timer-log
 
 k8s-delete:
-	@kubectl delete -f ./target/kubernetes/kubernetes.yml
+	@kubectl delete --all -f ./target/kubernetes/kubernetes.yml

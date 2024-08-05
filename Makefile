@@ -1,8 +1,12 @@
 # Variables
-SUBDIRS := main/timer-log quarkus/timer-log spring-boot/http-roll-dice spring-boot/timer-log
+SUBDIRS := \
+	main/timer-log \
+	quarkus/timer-log \
+	spring-boot/http-roll-dice \
+	spring-boot/timer-log
 
-package: $(SUBDIRS)
+package:
 	@$(foreach dir, $(SUBDIRS), $(MAKE) -C $(dir) package;)
 
-clean: $(SUBDIRS)
+clean:
 	@$(foreach dir, $(SUBDIRS), $(MAKE) -C $(dir) clean;)

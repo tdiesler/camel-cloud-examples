@@ -87,7 +87,7 @@ kubectl logs -f --tail 400  -l app.kubernetes.io/name=timer-log
 When done, you can delete the application like this ...
 
 ```shell
-kubectl delete -f ./target/kubernetes/kubernetes.yml
+kubectl delete --all -f ./target/kubernetes/kubernetes.yml
 ```
 
 ## Related Guides
