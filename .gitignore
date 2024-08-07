@@ -20,6 +20,7 @@ bin/
 
 # JBang
 .camel-jbang/
+.camel-jbang-run/
 
 # Visual Studio Code
 .vscode
