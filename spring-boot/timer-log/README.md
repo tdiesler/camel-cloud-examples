@@ -47,6 +47,9 @@ We can now verify that the plain Java application runs as expected.
 java -jar target/timer-log-1.0.0.jar
 ```
 
+A health endpoint is available at
+* http://127.0.0.1:8080/actuator/health
+
 ## Running the Docker container
 
 You can also run this application in plain Docker like this ...
@@ -60,7 +63,7 @@ docker run -it --rm examples/timer-log:1.0.0
 You can deploy/run this application on Minikube like this ...
 
 ```shell
-kubectl apply -f ./target/kubernetes/kubernetes.yml
+kubectl create -f ./target/kubernetes/kubernetes.yml
 kubectl logs -f --tail 400  -l app.kubernetes.io/name=timer-log
 
   .   ____          _            __ _ _
@@ -89,6 +92,17 @@ kubectl logs -f --tail 400  -l app.kubernetes.io/name=timer-log
 2024-07-17T11:06:01.400Z  INFO 1 --- [ - timer://yaml] route1                                   : Hello Camel from route1
 2024-07-17T11:06:02.389Z  INFO 1 --- [ - timer://yaml] route1                                   : Hello Camel from route1
 2024-07-17T11:06:03.389Z  INFO 1 --- [ - timer://yaml] route1                                   : Hello Camel from route1
+```
+
+The health endpoint is accessible on the node port.
+
+```
+$ kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        82m
+timer-log    NodePort    10.104.23.166   <none>        80:30931/TCP   13m
+
+$ curl -s http://127.0.0.1:30931/actuator/health
 ```
 
 ## Delete the application

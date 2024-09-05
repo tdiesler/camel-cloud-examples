@@ -29,7 +29,6 @@ We now export the integration as a native Camel project.
 camel kubernetes export timer-log-route.yaml \
   --gav=examples:timer-log:1.0.0 \
   --trait container.imagePullPolicy=IfNotPresent \
-  --trait service.type=NodePort \
   --runtime=camel-main
 ```
 
@@ -47,12 +46,14 @@ We can now verify that the plain Java application runs as expected.
 java -jar target/timer-log-1.0.0.jar
 ```
 
+By default, there is no health endpoint.
+
 ## Running the Docker container
 
 You can also run this application in plain Docker like this ...
 
 ```shell
-docker run -it --rm -p 8080:8080 examples/timer-log:1.0.0 
+docker run -it --rm examples/timer-log:1.0.0 
 ```
 
 ## Deploy on Kubernetes
@@ -60,7 +61,7 @@ docker run -it --rm -p 8080:8080 examples/timer-log:1.0.0
 You can deploy/run this application on Minikube like this ...
 
 ```shell
-kubectl apply -f ./target/kubernetes/kubernetes.yml
+kubectl create -f ./target/kubernetes/kubernetes.yml
 kubectl logs -f --tail 400  -l app.kubernetes.io/name=timer-log
 
 2024-07-24 10:28:10.917  INFO 1 --- [           main] org.apache.camel.main.MainSupport        : Apache Camel (Main) 4.8.0-SNAPSHOT is starting
@@ -75,8 +76,6 @@ kubectl logs -f --tail 400  -l app.kubernetes.io/name=timer-log
 2024-07-24 10:28:11.788  INFO 1 --- [           main] e.camel.impl.engine.AbstractCamelContext : Routes startup (total:1)
 2024-07-24 10:28:11.788  INFO 1 --- [           main] e.camel.impl.engine.AbstractCamelContext :     Started route1 (timer://yaml)
 2024-07-24 10:28:11.788  INFO 1 --- [           main] e.camel.impl.engine.AbstractCamelContext : Apache Camel 4.8.0-SNAPSHOT (camel-1) started in 89ms (build:0ms init:0ms start:89ms)
-2024-07-24 10:28:11.788  INFO 1 --- [           main] ponent.platform.http.main.MainHttpServer : HTTP endpoints summary
-2024-07-24 10:28:11.789  INFO 1 --- [           main] ponent.platform.http.main.MainHttpServer :     http://0.0.0.0:8080/q/health    (GET)    (produce:application/json)
 2024-07-24 10:28:12.807  INFO 1 --- [ - timer://yaml] route1                                   : Hello Camel from route1
 2024-07-24 10:28:13.792  INFO 1 --- [ - timer://yaml] route1                                   : Hello Camel from route1
 2024-07-24 10:28:14.793  INFO 1 --- [ - timer://yaml] route1                                   : Hello Camel from route1

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    camel.apache.org/integration: timer-log
+    app.kubernetes.io/runtime: camel
+  name: timer-log
+spec:
+  selector:
+    matchLabels:
+      camel.apache.org/integration: timer-log
+  template:
+    metadata:
+      labels:
+        camel.apache.org/integration: timer-log
+    spec:
+      containers:
+      - image: examples/timer-log:1.0.0
+        imagePullPolicy: IfNotPresent
+        name: timer-log
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    camel.apache.org/integration: timer-log
+    app.kubernetes.io/runtime: camel
+  name: timer-log
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selector:
+    camel.apache.org/integration: timer-log
+  type: NodePort
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: timer-log
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: timer-log
+            port:
+              name: http
+        path: /
+        pathType: Prefix

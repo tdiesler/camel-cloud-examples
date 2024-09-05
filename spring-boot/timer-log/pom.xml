@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.1</version>
+        <version>3.3.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -20,7 +20,7 @@
         <camel.springboot.kubernetes.image-name>examples/timer-log:1.0.0</camel.springboot.kubernetes.image-name>
         <camel.springboot.kubernetes.ports.http.container-port>8080</camel.springboot.kubernetes.ports.http.container-port>
         <camel.springboot.kubernetes.image-pull-policy>IfNotPresent</camel.springboot.kubernetes.image-pull-policy>
-        <jkube.version>1.16.2</jkube.version>
+        <camel.springboot.jkube.version>1.17.0</camel.springboot.jkube.version>
     </properties>
 
     <dependencyManagement>
@@ -29,7 +29,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>3.3.1</version>
+                <version>3.3.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -85,18 +85,6 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel.springboot</groupId>
-            <artifactId>camel-platform-http-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel.springboot</groupId>
-            <artifactId>camel-rest-openapi-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel.springboot</groupId>
-            <artifactId>camel-rest-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel.springboot</groupId>
             <artifactId>camel-timer-starter</artifactId>
         </dependency>
         <dependency>
@@ -125,7 +113,7 @@
             <plugin>
                 <groupId>org.eclipse.jkube</groupId>
                 <artifactId>kubernetes-maven-plugin</artifactId>
-                <version>${jkube.version}</version>
+                <version>${camel.springboot.jkube.version}</version>
                 <configuration>
                     <imagePullPolicy>${camel.springboot.kubernetes.image-pull-policy}</imagePullPolicy>
                     <buildStrategy>docker</buildStrategy>
@@ -201,6 +189,43 @@
                     <artifactId>camel-debug</artifactId>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.7.1</version>
+                        <executions>
+                            <execution>
+                                <id>copy</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                      <artifactItem>
+                                        <groupId>org.jolokia</groupId>
+                                        <artifactId>jolokia-agent-jvm</artifactId>
+                                        <version>2.1.0</version>
+                                        <type>jar</type>
+                                        <classifier>javaagent</classifier>
+                                      </artifactItem>
+                                    </artifactItems>
+                                    <stripVersion>true</stripVersion>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <jvmArguments>-javaagent:target/dependency/jolokia-agent-jvm-javaagent.jar=port=7878,host=localhost</jvmArguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 

@@ -49,6 +49,10 @@ We can now verify that the plain Java application runs as expected.
 java -jar target/timer-log-1.0.0.jar
 ```
 
+A health endpoints are available at
+* http://127.0.0.1:8080/q/health/ready
+* http://127.0.0.1:8080/q/health/live
+
 ## Running the Docker container
 
 You can also run this application in plain Docker like this ...
@@ -62,7 +66,7 @@ docker run -it --rm -p 8080:8080 examples/timer-log:1.0.0
 You can deploy/run this application on Minikube like this ...
 
 ```shell
-kubectl apply -f ./target/kubernetes/kubernetes.yml
+kubectl create -f ./target/kubernetes/kubernetes.yml
 kubectl logs -f --tail 400  -l app.kubernetes.io/name=timer-log
 
 INFO exec -a "java" java -Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager -XX:MaxRAMPercentage=50.0 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError -cp "." -jar /deployments/quarkus-run.jar 

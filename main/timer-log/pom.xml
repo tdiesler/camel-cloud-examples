@@ -13,7 +13,7 @@
         <camel.main.kubernetes.image-name>examples/timer-log:1.0.0</camel.main.kubernetes.image-name>
         <camel.main.kubernetes.ports.http.container-port>8080</camel.main.kubernetes.ports.http.container-port>
         <camel.main.kubernetes.image-pull-policy>IfNotPresent</camel.main.kubernetes.image-pull-policy>
-        <jkube.version>1.16.2</jkube.version>
+        <camel.main.jkube.version>1.17.0</camel.main.jkube.version>
     </properties>
 
     <dependencyManagement>
@@ -63,18 +63,6 @@
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-health</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-platform-http-main</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-rest</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-rest-openapi</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -174,7 +162,7 @@
             <plugin>
                 <groupId>org.eclipse.jkube</groupId>
                 <artifactId>kubernetes-maven-plugin</artifactId>
-                <version>${jkube.version}</version>
+                <version>${camel.main.jkube.version}</version>
                 <configuration>
                     <imagePullPolicy>${camel.main.kubernetes.image-pull-policy}</imagePullPolicy>
                     <buildStrategy>docker</buildStrategy>

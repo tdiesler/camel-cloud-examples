@@ -36,7 +36,18 @@ We can now verify that the plain Java application runs as expected.
 
 ```shell
 java -jar target/roll-dice-1.0.0.jar
+
+curl -s http://127.0.0.1:30931/actuator/health
 ```
+
+The application endpoint is available at 
+
+```
+$ curl -s http://127.0.0.1:8080/roll-dice
+```
+
+A health endpoint is available at
+* http://127.0.0.1:8080/actuator/health
 
 ## Running the Docker container
 
@@ -51,7 +62,7 @@ docker run -it --rm -p 8080:8080 examples/roll-dice:1.0.0
 You can deploy/run this application on Minikube like this ...
 
 ```shell
-kubectl apply -f ./target/kubernetes/kubernetes.yml
+kubectl create -f ./target/kubernetes/kubernetes.yml
 kubectl logs -f --tail 400  -l app.kubernetes.io/name=roll-dice
 
   .   ____          _            __ _ _
@@ -80,6 +91,17 @@ kubectl logs -f --tail 400  -l app.kubernetes.io/name=roll-dice
 2024-07-30T12:25:57.357Z  INFO 1 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2024-07-30T12:25:57.357Z  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2024-07-30T12:25:57.358Z  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+```
+
+The health endpoint is accessible on the node port.
+
+```
+$ kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        82m
+timer-log    NodePort    10.104.23.166   <none>        80:30931/TCP   13m
+
+$ curl -s http://127.0.0.1:30931/actuator/health
 ```
 
 ## Delete the application
