@@ -1,5 +1,6 @@
 
-SUBDIRS := main spring-boot quarkus
+SUBDIRS := \
+	timer-log
 
 package:
 	@$(foreach dir, $(SUBDIRS), $(MAKE) -C $(dir) package;)

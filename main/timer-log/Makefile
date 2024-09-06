@@ -1,6 +1,6 @@
 # Variables
 
-build: clean k8s-export
+package: clean k8s-export
 	@./mvnw clean package
 
 clean:
@@ -11,6 +11,7 @@ k8s-export:
 	@jbang camel kubernetes export timer-log-route.yaml \
        --gav=examples:timer-log:1.0.0 \
        --trait container.imagePullPolicy=IfNotPresent \
+	   --trait service.type=NodePort \
        --runtime=camel-main
 
 k8s-deploy:
@@ -24,11 +25,12 @@ k8s-run:
 	@jbang camel kubernetes run timer-log-route.yaml --logs \
        --gav=examples:timer-log:1.0.0 \
        --trait container.imagePullPolicy=IfNotPresent \
+	   --trait service.type=NodePort \
        --runtime=camel-main
 
 run-java:
 	@java -jar target/timer-log-1.0.0.jar
 
 run-docker:
-	@docker run -it --rm examples/timer-log:1.0.0
+	@docker run -it --rm -p 8080:8080 examples/timer-log:1.0.0
 

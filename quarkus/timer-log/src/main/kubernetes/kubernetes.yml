@@ -39,20 +39,3 @@ spec:
   selector:
     camel.apache.org/integration: timer-log
   type: NodePort
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: timer-log
-spec:
-  ingressClassName: nginx
-  rules:
-  - http:
-      paths:
-      - backend:
-          service:
-            name: timer-log
-            port:
-              name: http
-        path: /
-        pathType: Prefix

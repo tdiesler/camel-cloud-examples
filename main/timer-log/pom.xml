@@ -22,7 +22,7 @@
             <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-bom</artifactId>
-                <version>4.8.0-SNAPSHOT</version>
+                <version>4.9.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -63,6 +63,10 @@
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-health</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-platform-http-main</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -118,7 +122,7 @@
             <plugin>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-maven-plugin</artifactId>
-                <version>4.8.0-SNAPSHOT</version>
+                <version>4.9.0-SNAPSHOT</version>
                 <configuration>
                     <mainClass>examples.timerlog.CamelApplication</mainClass>
                 </configuration>

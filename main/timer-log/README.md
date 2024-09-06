@@ -29,6 +29,7 @@ We now export the integration as a native Camel project.
 camel kubernetes export timer-log-route.yaml \
   --gav=examples:timer-log:1.0.0 \
   --trait container.imagePullPolicy=IfNotPresent \
+  --trait service.type=NodePort \
   --runtime=camel-main
 ```
 
@@ -46,14 +47,16 @@ We can now verify that the plain Java application runs as expected.
 java -jar target/timer-log-1.0.0.jar
 ```
 
-By default, there is no health endpoint.
+A health endpoint is available at
+* http://127.0.0.1:8080/q/health
+
 
 ## Running the Docker container
 
 You can also run this application in plain Docker like this ...
 
 ```shell
-docker run -it --rm examples/timer-log:1.0.0 
+docker run -it --rm -p 8080:8080 examples/timer-log:1.0.0 
 ```
 
 ## Deploy on Kubernetes
@@ -79,6 +82,17 @@ kubectl logs -f --tail 400  -l app.kubernetes.io/name=timer-log
 2024-07-24 10:28:12.807  INFO 1 --- [ - timer://yaml] route1                                   : Hello Camel from route1
 2024-07-24 10:28:13.792  INFO 1 --- [ - timer://yaml] route1                                   : Hello Camel from route1
 2024-07-24 10:28:14.793  INFO 1 --- [ - timer://yaml] route1                                   : Hello Camel from route1
+```
+
+The health endpoint is accessible on the node port.
+
+```
+$ kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        82m
+timer-log    NodePort    10.104.23.166   <none>        80:30931/TCP   13m
+
+$ curl -s http://127.0.0.1:30931/q/health
 ```
 
 ## Delete the application
