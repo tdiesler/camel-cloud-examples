@@ -4,7 +4,7 @@ Here you find a set of Camel Kubernetes projects generated with [jbang camel kub
 
 These projects are organized by their respective runtime option.
 
-* [main](./main)
+* [main](./camel-main)
 * [quarkus](./quarkus)
 * [spring-boot](./spring-boot)
 
