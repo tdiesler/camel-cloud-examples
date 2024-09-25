@@ -16,7 +16,7 @@ Here the created route ...
 - from:
     uri: "timer:yaml"
     parameters:
-      period: "1000"
+      period: "2000"
     steps:
       - setBody:
           simple: "Hello Camel from ${routeId}"
