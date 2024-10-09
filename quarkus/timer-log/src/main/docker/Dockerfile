@@ -15,24 +15,20 @@
 # limitations under the License.
 #
 
-#
-# WARNING: this image is deprecated and won't be used in future versions: use Dockerfile instead
-#
-
 ####
 # This Dockerfile is used in order to build a container that runs the Quarkus application in JVM mode
 #
 # Before building the container image run:
 #
-# ./mvnw package -Dquarkus.package.type=legacy-jar
+# ./mvnw package
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.legacy-jar -t quarkus/code-with-quarkus-legacy-jar .
+# docker build -f src/main/docker/Dockerfile.jvm -t quarkus/code-with-quarkus-jvm .
 #
 # Then run the container using:
 #
-# docker run -i --rm -p 8080:8080 quarkus/code-with-quarkus-legacy-jar
+# docker run -i --rm -p 8080:8080 quarkus/code-with-quarkus-jvm
 #
 # If you want to include the debug port into your docker image
 # you will have to expose the debug port (default 5005 being the default) like this :  EXPOSE 8080 5005.
@@ -41,7 +37,7 @@
 #
 # Then run the container using :
 #
-# docker run -i --rm -p 8080:8080 quarkus/code-with-quarkus-legacy-jar
+# docker run -i --rm -p 8080:8080 quarkus/code-with-quarkus-jvm
 #
 # This image uses the `run-java.sh` script to run the application.
 # This scripts computes the command line to execute your Java application, and
@@ -103,8 +99,11 @@ FROM registry.access.redhat.com/ubi8/openjdk-17:1.16
 ENV LANGUAGE='en_US:en'
 
 
-COPY target/lib/* /deployments/lib/
-COPY target/*-runner.jar /deployments/quarkus-run.jar
+# We make four distinct layers so if there are application changes the library layers can be re-used
+COPY --chown=185 target/quarkus-app/lib/ /deployments/lib/
+COPY --chown=185 target/quarkus-app/*.jar /deployments/
+COPY --chown=185 target/quarkus-app/app/ /deployments/app/
+COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
 
 EXPOSE 8080
 USER 185
@@ -112,3 +111,4 @@ ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss
 ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
 
 ENTRYPOINT [ "/opt/jboss/container/java/run/run-java.sh" ]
+

@@ -9,6 +9,7 @@
     <version>1.0.0</version>
 
     <properties>
+        <project.build.outputTimestamp>2024-10-09T11:48:43Z</project.build.outputTimestamp>
         <compiler-plugin.version>3.13.0</compiler-plugin.version>
         <failsafe.useModulePath>false</failsafe.useModulePath>
         <maven.compiler.release>17</maven.compiler.release>
@@ -16,7 +17,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.version>3.14.4</quarkus.platform.version>
+        <quarkus.platform.version>3.15.1</quarkus.platform.version>
         <quarkus.container-image.group>examples</quarkus.container-image.group>
         <quarkus.kubernetes.image-name>examples/timer-log:1.0.0</quarkus.kubernetes.image-name>
         <quarkus.kubernetes.ports.http.container-port>8080</quarkus.kubernetes.ports.http.container-port>
@@ -52,10 +53,6 @@
         <dependency>
             <groupId>org.apache.camel.quarkus</groupId>
             <artifactId>camel-quarkus-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel.quarkus</groupId>
-            <artifactId>camel-quarkus-platform-http</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.camel.quarkus</groupId>

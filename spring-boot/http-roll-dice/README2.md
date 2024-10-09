@@ -96,7 +96,7 @@ kubectl logs -f --tail 400  -l app.kubernetes.io/name=roll-dice
 The health endpoint is accessible on the node port.
 
 ```
-$ kubectl get svc
+$kubectl get svc
 NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
 kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        82m
 timer-log    NodePort    10.104.23.166   <none>        80:30931/TCP   13m

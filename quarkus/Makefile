@@ -1,6 +1,6 @@
 
 SUBDIRS := \
-	timer-log
+    timer-log
 
 package:
 	@$(foreach dir, $(SUBDIRS), $(MAKE) -C $(dir) package;)
