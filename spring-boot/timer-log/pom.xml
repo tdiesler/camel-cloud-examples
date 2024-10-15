@@ -17,9 +17,12 @@
     <properties>
         <java.version>17</java.version>
         <camel.springboot.container-image.group>examples</camel.springboot.container-image.group>
+        <camel.springboot.container-image.registry>image-registry.openshift-image-registry.svc:5000</camel.springboot.container-image.registry>
+        <camel.springboot.container-image.insecure>false</camel.springboot.container-image.insecure>
         <camel.springboot.kubernetes.image-name>examples/timer-log:1.0.0</camel.springboot.kubernetes.image-name>
         <camel.springboot.kubernetes.ports.http.container-port>8080</camel.springboot.kubernetes.ports.http.container-port>
         <camel.springboot.kubernetes.image-pull-policy>IfNotPresent</camel.springboot.kubernetes.image-pull-policy>
+        <camel.springboot.jkube.maven.plugin>openshift-maven-plugin</camel.springboot.jkube.maven.plugin>
         <camel.springboot.jkube.version>1.17.0</camel.springboot.jkube.version>
     </properties>
 
@@ -112,7 +115,7 @@
             </plugin>
             <plugin>
                 <groupId>org.eclipse.jkube</groupId>
-                <artifactId>kubernetes-maven-plugin</artifactId>
+                <artifactId>${camel.springboot.jkube.maven.plugin}</artifactId>
                 <version>${camel.springboot.jkube.version}</version>
                 <configuration>
                     <imagePullPolicy>${camel.springboot.kubernetes.image-pull-policy}</imagePullPolicy>

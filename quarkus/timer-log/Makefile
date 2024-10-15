@@ -21,7 +21,7 @@ oce-export:
        --runtime=quarkus
 
 oce-deploy:
-	@kubectl apply -f ./target/kubernetes/openshift.yml && sleep 3 && \
+	@kubectl apply -f ./target/kubernetes/openshift.yml && sleep 5 && \
     kubectl logs -f --tail 400 -l app.kubernetes.io/name=timer-log
 
 oce-delete:
