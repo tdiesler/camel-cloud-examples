@@ -15,7 +15,8 @@ make package
 
 make run-java
 make run-docker
-make run-k8s
 
+make k8s-export
+make k8s-deploy
 make k8s-delete
 ```

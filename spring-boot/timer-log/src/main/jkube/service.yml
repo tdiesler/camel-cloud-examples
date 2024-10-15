@@ -13,4 +13,4 @@ spec:
     targetPort: http
   selector:
     camel.apache.org/integration: timer-log
-  type: NodePort
+  type: ClusterIP
