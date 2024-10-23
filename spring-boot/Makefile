@@ -1,7 +1,6 @@
 
 SUBDIRS := \
-	http-roll-dice \
-	timer-log
+    timer-log
 
 package:
 	@$(foreach dir, $(SUBDIRS), $(MAKE) -C $(dir) package;)
