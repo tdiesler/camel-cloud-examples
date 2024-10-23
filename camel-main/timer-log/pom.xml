@@ -10,12 +10,10 @@
     <properties>
         <java.version>17</java.version>
         <camel.main.container-image.group>examples</camel.main.container-image.group>
-        <camel.main.container-image.registry>image-registry.openshift-image-registry.svc:5000</camel.main.container-image.registry>
-        <camel.main.container-image.insecure>false</camel.main.container-image.insecure>
         <camel.main.kubernetes.image-name>examples/timer-log:1.0.0</camel.main.kubernetes.image-name>
         <camel.main.kubernetes.ports.http.container-port>8080</camel.main.kubernetes.ports.http.container-port>
         <camel.main.kubernetes.image-pull-policy>IfNotPresent</camel.main.kubernetes.image-pull-policy>
-        <camel.main.jkube.maven.plugin>openshift-maven-plugin</camel.main.jkube.maven.plugin>
+        <camel.main.jkube.maven.plugin>kubernetes-maven-plugin</camel.main.jkube.maven.plugin>
         <camel.main.jkube.version>1.17.0</camel.main.jkube.version>
     </properties>
 

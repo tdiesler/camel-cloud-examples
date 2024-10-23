@@ -1,7 +1,6 @@
 # Variables
 
-package: clean oce-export
-	@./mvnw clean package
+package: k8s-package
 
 clean:
 	@CUR_DIR=$$(pwd | awk -F'/' '{print $$(NF-1)"/"$$(NF)}') && echo "Clean $$CUR_DIR"
@@ -12,6 +11,9 @@ clean:
 #
 # oc new-project examples
 
+oce-package: clean oce-export
+	@./mvnw clean package
+
 oce-export:
 	@jbang camel kubernetes export timer-log-route.yaml \
        --gav=examples:timer-log:1.0.0 \
@@ -21,11 +23,23 @@ oce-export:
        --runtime=camel-main
 
 oce-deploy:
-	@kubectl apply -f ./target/kubernetes/openshift.yml && sleep 5 && \
+	@kubectl apply -f ./target/kubernetes/openshift.yml && \
+	kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=timer-log --timeout=20s && \
     kubectl logs -f --tail 400 -l app.kubernetes.io/name=timer-log
 
 oce-delete:
 	@kubectl delete --all -f ./target/kubernetes/openshift.yml
+
+oce-run:
+	@jbang camel kubernetes run timer-log-route.yaml --logs \
+	   --gav=examples:timer-log:1.0.0 \
+       --image-registry image-registry.openshift-image-registry.svc:5000 \
+       --trait container.imagePullPolicy=IfNotPresent \
+       --cluster-type openshift \
+	   --runtime=camel-main
+
+k8s-package: clean k8s-export
+	@./mvnw clean package
 
 k8s-export:
 	@jbang camel kubernetes export timer-log-route.yaml \
@@ -35,7 +49,8 @@ k8s-export:
        --runtime=camel-main
 
 k8s-deploy:
-	@kubectl create -f ./target/kubernetes/kubernetes.yml && sleep 3 && \
+	@kubectl create -f ./target/kubernetes/kubernetes.yml && \
+	kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=timer-log --timeout=20s && \
     kubectl logs -f --tail 400 -l app.kubernetes.io/name=timer-log
 
 k8s-delete:

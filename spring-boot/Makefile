@@ -1,6 +1,5 @@
 
 SUBDIRS := \
-    http-roll-dice \
     timer-log
 
 package:

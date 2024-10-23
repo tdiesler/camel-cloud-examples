@@ -1,5 +1,0 @@
-- from:
-    uri: 'platform-http:/roll-dice'
-    steps:
-      - setBody:
-          simple: 'roll: $simple{random(1,7)}'
