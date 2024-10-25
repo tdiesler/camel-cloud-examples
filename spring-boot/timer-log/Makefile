@@ -1,5 +1,8 @@
 # Variables
 
+# make k8s-run RUN_MODE=dev
+RUN_MODE ?= logs
+
 package: k8s-package
 
 clean:
@@ -23,15 +26,14 @@ oce-export:
        --runtime=spring-boot
 
 oce-deploy:
-	@kubectl apply -f ./target/kubernetes/openshift.yml && \
-	kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=timer-log --timeout=20s && \
-    kubectl logs -f --tail 400 -l app.kubernetes.io/name=timer-log
+	@kubectl apply -f ./target/kubernetes/openshift.yml
+	@jbang camel kubernetes logs --name timer-log
 
 oce-delete:
 	@kubectl delete --all -f ./target/kubernetes/openshift.yml
 
 oce-run:
-	@jbang camel kubernetes run timer-log-route.yaml --logs \
+	@jbang camel kubernetes run timer-log-route.yaml --$(RUN_MODE) \
 	   --gav=examples:timer-log:1.0.0 \
        --image-registry image-registry.openshift-image-registry.svc:5000 \
        --trait container.imagePullPolicy=IfNotPresent \
@@ -49,19 +51,18 @@ k8s-export:
 	   --runtime=spring-boot
 
 k8s-deploy:
-	@kubectl create -f ./target/kubernetes/kubernetes.yml && \
-	kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=timer-log --timeout=20s && \
-    kubectl logs -f --tail 400 -l app.kubernetes.io/name=timer-log
+	@kubectl create -f ./target/kubernetes/kubernetes.yml
+	@jbang camel kubernetes logs --name timer-log
 
 k8s-delete:
 	@kubectl delete --all -f ./target/kubernetes/kubernetes.yml
 
 k8s-run:
-	@jbang camel kubernetes run timer-log-route.yaml --logs \
-	   --gav=examples:timer-log:1.0.0 \
-	   --trait container.imagePullPolicy=IfNotPresent \
-	   --trait service.type=NodePort \
-	   --runtime=spring-boot
+	@jbang camel kubernetes run timer-log-route.yaml --$(RUN_MODE) \
+       --gav=examples:timer-log:1.0.0 \
+       --trait container.imagePullPolicy=IfNotPresent \
+       --trait service.type=NodePort \
+       --runtime=spring-boot
 
 run-java:
 	@java -jar target/timer-log-1.0.0.jar
