@@ -30,7 +30,7 @@ We now export the integration as a Camel Quarkus project with additional depende
 ```shell 
 camel kubernetes export timer-log-route.yaml \
   --gav=examples:timer-log:1.0.0 \
-  --trait container.imagePullPolicy=IfNotPresent \
+  --trait container.image-pull-policy=IfNotPresent \
   --trait service.type=NodePort \
   --runtime=quarkus
 ```
@@ -66,7 +66,7 @@ docker run -it --rm -p 8080:8080 examples/timer-log:1.0.0
 You can deploy/run this application on Minikube like this ...
 
 ```shell
-kubectl create -f ./target/kubernetes/kubernetes.yml
+kubectl apply -f ./target/kubernetes/kubernetes.yml
 kubectl logs -f --tail 400  -l app.kubernetes.io/name=timer-log
 
 INFO exec -a "java" java -Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager -XX:MaxRAMPercentage=50.0 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError -cp "." -jar /deployments/quarkus-run.jar 

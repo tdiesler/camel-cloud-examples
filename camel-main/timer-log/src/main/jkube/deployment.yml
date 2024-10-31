@@ -15,10 +15,12 @@ spec:
         app.kubernetes.io/name: timer-log
     spec:
       containers:
-      - image: examples/timer-log:1.0.0
-        imagePullPolicy: IfNotPresent
+      - image: k3s-registry:31443/examples/timer-log:1.0.0
+        imagePullPolicy: Always
         name: timer-log
         ports:
         - containerPort: 8080
           name: http
           protocol: TCP
+      imagePullSecrets:
+      - name: k3s-registry-creds

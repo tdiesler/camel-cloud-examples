@@ -9,6 +9,52 @@ clean:
 	@CUR_DIR=$$(pwd | awk -F'/' '{print $$(NF-1)"/"$$(NF)}') && echo "Clean $$CUR_DIR"
 	@rm -rf .camel-* .mvn src target mvnw mvnw.cmd pom.xml readme.md
 
+k3s-package: clean k3s-export
+	# -Djkube.docker.username=<registry-user> -Djkube.docker.password=<registry-password>
+	# Alternatively: docker login k3s-registry:31443
+	@./mvnw clean package
+
+k3s-export:
+	@jbang camel kubernetes export timer-log-route.yaml \
+	   --gav=examples:timer-log:1.0.0 \
+       --image-registry k3s-registry:31443 \
+	   --trait container.image-pull-policy=Always \
+	   --trait container.image-pull-secrets=k3s-registry-creds \
+	   --trait container.image-push=true \
+	   --trait service.type=NodePort \
+	   --runtime=camel-main
+
+k3s-deploy:
+	@kubectl apply -f ./target/kubernetes/kubernetes.yml
+	@jbang camel kubernetes logs --name timer-log
+
+k3s-delete:
+	@kubectl delete --all -f ./target/kubernetes/kubernetes.yml
+
+k8s-package: clean k8s-export
+	@./mvnw clean package
+
+k8s-export:
+	@jbang camel kubernetes export timer-log-route.yaml \
+       --gav=examples:timer-log:1.0.0 \
+       --trait container.image-pull-policy=IfNotPresent \
+       --trait service.type=NodePort \
+       --runtime=camel-main
+
+k8s-deploy:
+	@kubectl apply -f ./target/kubernetes/kubernetes.yml
+	@jbang camel kubernetes logs --name timer-log
+
+k8s-delete:
+	@kubectl delete --all -f ./target/kubernetes/kubernetes.yml
+
+k8s-run:
+	@jbang camel kubernetes run timer-log-route.yaml --$(RUN_MODE) \
+       --gav=examples:timer-log:1.0.0 \
+       --trait container.image-pull-policy=IfNotPresent \
+       --trait service.type=NodePort \
+       --runtime=camel-main
+
 # For Openshift, users will need to make sure that the target project/namespace name is aligned with the quarkus.container-image.group.
 # https://quarkus.io/guides/deploying-to-openshift
 #
@@ -21,7 +67,7 @@ oce-export:
 	@jbang camel kubernetes export timer-log-route.yaml \
        --gav=examples:timer-log:1.0.0 \
        --image-registry image-registry.openshift-image-registry.svc:5000 \
-       --trait container.imagePullPolicy=IfNotPresent \
+       --trait container.image-pull-policy=IfNotPresent \
        --cluster-type openshift \
        --runtime=camel-main
 
@@ -36,33 +82,9 @@ oce-run:
 	@jbang camel kubernetes run timer-log-route.yaml --$(RUN_MODE) \
 	   --gav=examples:timer-log:1.0.0 \
        --image-registry image-registry.openshift-image-registry.svc:5000 \
-       --trait container.imagePullPolicy=IfNotPresent \
+       --trait container.image-pull-policy=IfNotPresent \
        --cluster-type openshift \
 	   --runtime=camel-main
-
-k8s-package: clean k8s-export
-	@./mvnw clean package
-
-k8s-export:
-	@jbang camel kubernetes export timer-log-route.yaml \
-       --gav=examples:timer-log:1.0.0 \
-       --trait container.imagePullPolicy=IfNotPresent \
-       --trait service.type=NodePort \
-       --runtime=camel-main
-
-k8s-deploy:
-	@kubectl create -f ./target/kubernetes/kubernetes.yml
-	@jbang camel kubernetes logs --name timer-log
-
-k8s-delete:
-	@kubectl delete --all -f ./target/kubernetes/kubernetes.yml
-
-k8s-run:
-	@jbang camel kubernetes run timer-log-route.yaml --$(RUN_MODE) \
-       --gav=examples:timer-log:1.0.0 \
-       --trait container.imagePullPolicy=IfNotPresent \
-       --trait service.type=NodePort \
-       --runtime=camel-main
 
 run-java:
 	@java -jar target/timer-log-1.0.0.jar

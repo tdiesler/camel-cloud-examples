@@ -28,7 +28,7 @@ We now export the integration as a native Camel project.
 ```shell 
 camel kubernetes export timer-log-route.yaml \
   --gav=examples:timer-log:1.0.0 \
-  --trait container.imagePullPolicy=IfNotPresent \
+  --trait container.image-pull-policy=IfNotPresent \
   --trait service.type=NodePort \
   --runtime=camel-main
 ```
@@ -64,7 +64,7 @@ docker run -it --rm -p 8080:8080 examples/timer-log:1.0.0
 You can deploy/run this application on Minikube like this ...
 
 ```shell
-kubectl create -f ./target/kubernetes/kubernetes.yml
+kubectl apply -f ./target/kubernetes/kubernetes.yml
 kubectl logs -f --tail 400  -l app.kubernetes.io/name=timer-log
 
 2024-07-24 10:28:10.917  INFO 1 --- [           main] org.apache.camel.main.MainSupport        : Apache Camel (Main) 4.8.0-SNAPSHOT is starting

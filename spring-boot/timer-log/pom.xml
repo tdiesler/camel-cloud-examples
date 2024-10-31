@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
+        <version>3.3.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -19,7 +19,10 @@
         <camel.springboot.container-image.group>examples</camel.springboot.container-image.group>
         <camel.springboot.kubernetes.image-name>examples/timer-log:1.0.0</camel.springboot.kubernetes.image-name>
         <camel.springboot.kubernetes.ports.http.container-port>8080</camel.springboot.kubernetes.ports.http.container-port>
-        <camel.springboot.kubernetes.image-pull-policy>IfNotPresent</camel.springboot.kubernetes.image-pull-policy>
+        <camel.springboot.kubernetes.image-pull-policy>Always</camel.springboot.kubernetes.image-pull-policy>
+        <jkube.build.strategy>jib</jkube.build.strategy>
+        <jkube.docker.push.registry>k3s-registry:31443</jkube.docker.push.registry>
+        <jkube.skip.push>false</jkube.skip.push>
         <camel.springboot.jkube.maven.plugin>kubernetes-maven-plugin</camel.springboot.jkube.maven.plugin>
         <camel.springboot.jkube.version>1.17.0</camel.springboot.jkube.version>
     </properties>
@@ -30,7 +33,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>3.3.4</version>
+                <version>3.3.5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -117,12 +120,13 @@
                 <version>${camel.springboot.jkube.version}</version>
                 <configuration>
                     <imagePullPolicy>${camel.springboot.kubernetes.image-pull-policy}</imagePullPolicy>
-                    <buildStrategy>docker</buildStrategy>
+                    <buildStrategy>${jkube.build.strategy}</buildStrategy>
                     <images>
                         <image>
                             <name>${camel.springboot.kubernetes.image-name}</name>
                             <build>
                                 <from>eclipse-temurin:17</from>
+                                <!-- Supported only when using the jib build strategy -->
                                 <createImageOptions>
                                     <platform>linux/amd64</platform>
                                     <platform>linux/arm64</platform>
@@ -146,6 +150,7 @@
                         <goals>
                             <goal>build</goal>
                             <goal>resource</goal>
+                            <goal>push</goal>
                         </goals>
                         <phase>package</phase>
                     </execution>

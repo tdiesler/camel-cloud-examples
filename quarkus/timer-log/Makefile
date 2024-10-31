@@ -21,7 +21,7 @@ oce-export:
 	@jbang camel kubernetes export timer-log-route.yaml \
        --gav=examples:timer-log:1.0.0 \
        --image-registry image-registry.openshift-image-registry.svc:5000 \
-       --trait container.imagePullPolicy=IfNotPresent \
+       --trait container.image-pull-policy=IfNotPresent \
        --cluster-type openshift \
        --runtime=quarkus
 
@@ -36,7 +36,7 @@ oce-run:
 	@jbang camel kubernetes run timer-log-route.yaml --$(RUN_MODE) \
 	   --gav=examples:timer-log:1.0.0 \
        --image-registry image-registry.openshift-image-registry.svc:5000 \
-       --trait container.imagePullPolicy=IfNotPresent \
+       --trait container.image-pull-policy=IfNotPresent \
        --cluster-type openshift \
 	   --runtime=quarkus
 
@@ -46,12 +46,12 @@ k8s-package: clean k8s-export
 k8s-export:
 	@jbang camel kubernetes export timer-log-route.yaml \
        --gav=examples:timer-log:1.0.0 \
-       --trait container.imagePullPolicy=IfNotPresent \
+       --trait container.image-pull-policy=IfNotPresent \
        --trait service.type=NodePort \
        --runtime=quarkus
 
 k8s-deploy:
-	@kubectl create -f ./target/kubernetes/kubernetes.yml
+	@kubectl apply -f ./target/kubernetes/kubernetes.yml
 	@jbang camel kubernetes logs --name timer-log
 
 k8s-delete:
@@ -60,7 +60,7 @@ k8s-delete:
 k8s-run:
 	@jbang camel kubernetes run timer-log-route.yaml --$(RUN_MODE) \
        --gav=examples:timer-log:1.0.0 \
-       --trait container.imagePullPolicy=IfNotPresent \
+       --trait container.image-pull-policy=IfNotPresent \
        --trait service.type=NodePort \
        --runtime=quarkus
 
