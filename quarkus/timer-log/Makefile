@@ -1,13 +1,34 @@
 # Variables
 
-# make k8s-run RUN_MODE=dev
+# make k3s-run RUN_MODE=dev
 RUN_MODE ?= logs
 
-package: k8s-package
+package: k3s-package
 
 clean:
 	@CUR_DIR=$$(pwd | awk -F'/' '{print $$(NF-1)"/"$$(NF)}') && echo "Clean $$CUR_DIR"
 	@rm -rf .camel-* .mvn src target mvnw mvnw.cmd pom.xml readme.md
+
+k3s-package: clean k3s-export
+	# -Djkube.docker.username=<registry-user> -Djkube.docker.password=<registry-password>
+	# Alternatively: docker login k3s-registry:30443
+	@./mvnw clean package
+
+k3s-export:
+	@jbang camel kubernetes export timer-log-route.yaml \
+	   --gav=examples:timer-log:1.0.0 \
+       --image-registry k3s-registry:30443 \
+	   --trait container.image-pull-policy=Always \
+	   --trait container.image-push=true \
+	   --trait service.type=NodePort \
+	   --runtime=quarkus
+
+k3s-deploy:
+	@kubectl apply -f ./target/kubernetes/kubernetes.yml
+	@jbang camel kubernetes logs --name timer-log
+
+k3s-delete:
+	@kubectl delete --all -f ./target/kubernetes/kubernetes.yml
 
 # For Openshift, users will need to make sure that the target project/namespace name is aligned with the quarkus.container-image.group.
 # https://quarkus.io/guides/deploying-to-openshift

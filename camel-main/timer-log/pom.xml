@@ -9,15 +9,13 @@
 
     <properties>
         <java.version>17</java.version>
-        <camel.main.container-image.group>examples</camel.main.container-image.group>
+        <jkube.container-image.registry>k3s-registry:30443</jkube.container-image.registry>
+        <jkube.container-image.name>k3s-registry:30443/examples/timer-log:1.0.0</jkube.container-image.name>
+        <jkube.container-image.imagePullPolicy>Always</jkube.container-image.imagePullPolicy>
         <jkube.build.strategy>jib</jkube.build.strategy>
-        <jkube.docker.push.registry>k3s-registry:31443</jkube.docker.push.registry>
         <jkube.skip.push>false</jkube.skip.push>
-        <camel.main.kubernetes.image-name>examples/timer-log:1.0.0</camel.main.kubernetes.image-name>
-        <camel.main.kubernetes.ports.http.container-port>8080</camel.main.kubernetes.ports.http.container-port>
-        <camel.main.kubernetes.image-pull-policy>Always</camel.main.kubernetes.image-pull-policy>
-        <camel.main.jkube.maven.plugin>kubernetes-maven-plugin</camel.main.jkube.maven.plugin>
-        <camel.main.jkube.version>1.17.0</camel.main.jkube.version>
+        <jkube.maven.plugin>kubernetes-maven-plugin</jkube.maven.plugin>
+        <jkube.version>1.17.0</jkube.version>
     </properties>
 
     <dependencyManagement>
@@ -169,23 +167,19 @@
             </plugin>
             <plugin>
                 <groupId>org.eclipse.jkube</groupId>
-                <artifactId>${camel.main.jkube.maven.plugin}</artifactId>
-                <version>${camel.main.jkube.version}</version>
+                <artifactId>${jkube.maven.plugin}</artifactId>
+                <version>${jkube.version}</version>
                 <configuration>
-                    <imagePullPolicy>${camel.main.kubernetes.image-pull-policy}</imagePullPolicy>
                     <buildStrategy>${jkube.build.strategy}</buildStrategy>
                     <images>
                         <image>
-                            <name>${camel.main.kubernetes.image-name}</name>
                             <build>
                                 <from>eclipse-temurin:17</from>
+                                <!-- Supported only when using the jib build strategy -->
                                 <createImageOptions>
                                     <platform>linux/amd64</platform>
                                     <platform>linux/arm64</platform>
                                 </createImageOptions>
-                                <ports>
-                                    <port>${camel.main.kubernetes.ports.http.container-port}</port>
-                                </ports>
                                 <entryPoint>
                                     <exec>
                                         <arg>java</arg>
@@ -218,7 +212,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <!-- For symmetry with Quarkus, copy kubernetes.yml to the same target location -->
+                            <!-- Copy kubernetes resources to target/kubernetes -->
                             <outputDirectory>${project.build.directory}/kubernetes</outputDirectory>
                             <resources>
                                 <resource>

@@ -40,7 +40,7 @@ spec:
       volumes:
         - name: tls-secret
           secret:
-            secretName: k3s-host-cert
+            secretName: k3s-cert
         - name: auth-secret
           secret:
             secretName: registry-auth
@@ -55,6 +55,6 @@ spec:
     - port: 443
       targetPort: 443
       protocol: TCP
-      nodePort: 31443
+      nodePort: 30443
   selector:
     app.kubernetes.io/name: registry

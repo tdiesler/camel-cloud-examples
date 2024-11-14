@@ -1,0 +1,79 @@
+#
+# ansible-playbook -i ansible/hosts.ini ansible/step00-prepare-vps.yml
+#
+---
+- name: Update/Install packages on servers
+  hosts: servers
+  vars:
+    user_home: "/home/{{ ansible_user }}"
+  become: yes
+
+  tasks:
+
+    # Hostname ---------------------------------------------------------------------------------------------------------
+
+    - name: Get external IP address
+      ansible.builtin.shell: "curl -s ipinfo.io/ip"
+      register: external_ip
+
+    - name: Append {{ ansible_hostname }} to /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{ external_ip.stdout }} {{ ansible_hostname }} {{ ansible_hostname }}-registry k3s-registry"
+        create: yes
+      register: append_etc_host
+
+    - name: Append {{ ansible_hostname }} result
+      ansible.builtin.debug:
+        var: append_etc_host
+
+    # Yum install ------------------------------------------------------------------------------------------------------
+
+    - name: Yum update packages
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+      register: yum_update
+
+    - name: Yum update result
+      ansible.builtin.debug:
+        var: yum_update
+
+    - name: Install packages
+      ansible.builtin.yum:
+        name:
+          - buildah
+          - git
+          - httpd-tools
+          - jq
+        state: present
+      register: yum_install
+
+    - name: Install packages result
+      ansible.builtin.debug:
+        var: yum_install
+
+    # RSA keys ---------------------------------------------------------------------------------------------------------
+
+    - name: Generate RSA keys
+      ansible.builtin.command:
+        cmd: ssh-keygen -t rsa -b 2048 -f {{ user_home }}/.ssh/id_rsa -N '' -C '{{ ansible_hostname }}@example.com'
+      args:
+        creates: "{{ user_home }}/.ssh/id_rsa"
+      register: rsa_keys
+      become: no
+
+    - name: Generate RSA keys result
+      ansible.builtin.debug:
+        var: rsa_keys
+
+    # Git config -------------------------------------------------------------------------------------------------------
+
+    - name: Git config
+      ansible.builtin.command:
+        cmd: git config --global init.defaultBranch main
+      register: git_config
+
+    - name: Git config result
+      ansible.builtin.debug:
+        var: git_config

@@ -1,0 +1,192 @@
+#
+# ansible-playbook -i ansible/hosts.ini ansible/step02-registry.yml
+#
+---
+- name: Install Docker Registry
+  hosts: servers
+  become: yes
+  vars:
+    user_home: "/home/{{ ansible_user }}"
+    registry_spec: "k3s-registry:{{ REGISTRY_PORT }}"
+
+  tasks:
+    - name: Get external IP address
+      ansible.builtin.shell: "curl -s ipinfo.io/ip"
+      register: external_ip
+
+    - name: Create .k3s directory
+      ansible.builtin.file:
+        path: "{{ user_home }}/.k3s"
+        state: directory
+
+    - name: Copy registry-deployment.yml to target server
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/registry-deployment.yml"
+        dest: "{{ user_home }}/.k3s/registry-deployment.yml"
+
+    # Create Registry Certificate --------------------------------------------------------------------------------------
+
+    - name: Create OpenSSL configuration file for SAN
+      ansible.builtin.copy:
+        dest: "{{ user_home }}/.k3s/san.cnf"
+        content: |
+          [ req ]
+          default_bits       = 4096
+          distinguished_name = req_distinguished_name
+          req_extensions     = req_ext
+          x509_extensions    = v3_req
+          prompt             = no
+
+          [ req_distinguished_name ]
+          C  = US
+          ST = State
+          L  = City
+          O  = Organization
+          OU = Unit
+
+          [ req_ext ]
+          subjectAltName = @alt_names
+
+          [ v3_req ]
+          keyUsage = keyEncipherment, dataEncipherment
+          extendedKeyUsage = serverAuth
+          subjectAltName = @alt_names
+
+          [ alt_names ]
+          DNS.1 = {{ ansible_hostname }}
+          DNS.2 = k3s-registry
+          IP.1  = {{ external_ip.stdout }}
+        mode: '0644'
+
+    - name: Generate TLS certificate and key using OpenSSL
+      ansible.builtin.shell: |
+        openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
+          -config "{{ user_home }}/.k3s/san.cnf" \
+          -keyout "{{ user_home }}/.k3s/tls.key" \
+          -out "{{ user_home }}/.k3s/tls.crt"
+      args:
+        creates: "{{ user_home }}/.k3s/tls.crt"
+
+    # Registry Basic Auth ----------------------------------------------------------------------------------------------
+
+    - name: Create registry password file with htpasswd
+      ansible.builtin.shell: |
+        echo "{{ REGISTRY_PASSWORD }}" | \
+        htpasswd -Bic "{{ user_home }}/.k3s/registry.password" {{ REGISTRY_USER }}
+      args:
+        creates: "{{ user_home }}/.k3s/registry.password"
+
+    # Registry Secrets -------------------------------------------------------------------------------------------------
+
+    - name: Create registry namespace
+      ansible.builtin.shell: |
+        kubectl get namespace registry || kubectl create namespace registry
+
+    - name: Create secret k3s-cert
+      ansible.builtin.shell: |
+        kubectl delete secret tls k3s-cert -n registry --ignore-not-found
+        kubectl create secret tls k3s-cert -n registry \
+          --cert="{{ user_home }}/.k3s/tls.crt" \
+          --key="{{ user_home }}/.k3s/tls.key"
+
+    - name: Create secret registry-auth
+      ansible.builtin.shell: |
+        kubectl delete secret generic registry-auth -n registry --ignore-not-found
+        kubectl create secret generic registry-auth -n registry \
+          --from-file=htpasswd="{{ user_home }}/.k3s/registry.password"
+
+    # K3S Registry Config ----------------------------------------------------------------------------------------------
+
+    - name: Create k3s registries.yaml
+      ansible.builtin.copy:
+        dest: "/etc/rancher/k3s/registries.yaml"
+        content: |
+          mirrors:
+            {{ registry_spec }}:
+              endpoint:
+                - "https://{{ external_ip.stdout }}:{{ REGISTRY_PORT }}"
+          configs:
+            {{ registry_spec }}:
+              auth:
+                username: {{ REGISTRY_USER }}
+                password: {{ REGISTRY_PASSWORD }}
+              tls:
+                insecure_skip_verify: true
+
+    - name: Restart k3s service
+      ansible.builtin.systemd:
+        name: k3s
+        state: restarted
+      register: k3s_ready
+
+    # Registry Deployment ----------------------------------------------------------------------------------------------
+
+    - name: Apply the registry deployment
+      ansible.builtin.shell: |
+        kubectl delete -f {{ user_home }}/.k3s/registry-deployment.yml -n registry --ignore-not-found
+        kubectl apply -f {{ user_home }}/.k3s/registry-deployment.yml -n registry
+      when: not k3s_ready.failed
+      register: apply_result
+
+    - name: Apply the registry deployment results
+      ansible.builtin.debug:
+        var: apply_result
+
+    - name: Wait for registry pod ready
+      ansible.builtin.shell: |
+        sleep 10s
+        kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=registry -n registry --timeout=120s
+      register: wait_result
+
+    - name: Wait for registry pod ready results
+      ansible.builtin.debug:
+        var: wait_result
+
+    - name: Fetch registry logs
+      ansible.builtin.shell: |
+        kubectl logs --tail 400 -l app.kubernetes.io/name=registry -n registry
+      register: logs_result
+
+    - name: Fetch registry logs results
+      ansible.builtin.debug:
+        var: logs_result
+
+    # Configure buildah ------------------------------------------------------------------------------------------------
+
+    - name: Configure Buildah
+      ansible.builtin.copy:
+        dest: "/etc/containers/registries.conf"
+        content: |
+          [[registry]]
+          location = "{{ registry_spec }}"
+          insecure = true
+
+    # Buildah registry access ------------------------------------------------------------------------------------------
+
+    - name: Buildah login
+      ansible.builtin.shell: |
+        buildah login --username {{ REGISTRY_USER }} --password {{ REGISTRY_PASSWORD }} {{ registry_spec }}
+      register: buildah_login
+
+    - name: Buildah login results
+      ansible.builtin.debug:
+        var: buildah_login
+
+    - name: Buildah pull
+      ansible.builtin.shell: |
+        buildah pull docker.io/library/nginx:latest
+        buildah tag docker.io/library/nginx:latest {{ registry_spec }}/nginx:latest
+      register: buildah_pull
+
+    - name: Buildah pull results
+      ansible.builtin.debug:
+        var: buildah_pull
+
+    - name: Buildah push
+      ansible.builtin.shell: |
+        buildah push {{ registry_spec }}/nginx:latest
+      register: buildah_push
+
+    - name: Buildah push results
+      ansible.builtin.debug:
+        var: buildah_push

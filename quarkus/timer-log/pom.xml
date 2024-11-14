@@ -9,7 +9,7 @@
     <version>1.0.0</version>
 
     <properties>
-        <project.build.outputTimestamp>2024-10-25T15:03:35Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2024-11-15T15:50:11Z</project.build.outputTimestamp>
         <compiler-plugin.version>3.13.0</compiler-plugin.version>
         <failsafe.useModulePath>false</failsafe.useModulePath>
         <maven.compiler.release>17</maven.compiler.release>
@@ -17,13 +17,14 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.version>3.15.1</quarkus.platform.version>
-        <quarkus.container-image.group>examples</quarkus.container-image.group>
-        <quarkus.kubernetes.image-name>examples/timer-log:1.0.0</quarkus.kubernetes.image-name>
-        <quarkus.kubernetes.ports.http.container-port>8080</quarkus.kubernetes.ports.http.container-port>
-        <quarkus.kubernetes.image-pull-policy>if-not-present</quarkus.kubernetes.image-pull-policy>
-        <quarkus.container-image.builder>jib</quarkus.container-image.builder>
-        <quarkus.container-image.build>true</quarkus.container-image.build>
+        <quarkus.platform.version>3.16.3</quarkus.platform.version>
+        <jkube.container-image.registry>k3s-registry:30443</jkube.container-image.registry>
+        <jkube.container-image.name>k3s-registry:30443/examples/timer-log:1.0.0</jkube.container-image.name>
+        <jkube.container-image.imagePullPolicy>Always</jkube.container-image.imagePullPolicy>
+        <jkube.build.strategy>jib</jkube.build.strategy>
+        <jkube.skip.push>false</jkube.skip.push>
+        <jkube.maven.plugin>kubernetes-maven-plugin</jkube.maven.plugin>
+        <jkube.version>1.17.0</jkube.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.1.2</surefire-plugin.version>
     </properties>
@@ -57,14 +58,6 @@
         <dependency>
             <groupId>org.apache.camel.quarkus</groupId>
             <artifactId>camel-quarkus-microprofile-health</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-container-image-jib</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-kubernetes</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.camel.quarkus</groupId>
@@ -108,6 +101,77 @@
                         <arg>-parameters</arg>
                     </compilerArgs>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.jkube</groupId>
+                <artifactId>${jkube.maven.plugin}</artifactId>
+                <version>${jkube.version}</version>
+                <configuration>
+                    <buildStrategy>${jkube.build.strategy}</buildStrategy>
+                    <images>
+                        <image>
+                            <build>
+                                <from>eclipse-temurin:17</from>
+                                <!-- Supported only when using the jib build strategy -->
+                                <createImageOptions>
+                                    <platform>linux/amd64</platform>
+                                    <platform>linux/arm64</platform>
+                                </createImageOptions>
+                                <assembly>
+                                    <layers>
+                                        <layer>
+                                            <id>quarkus-files</id>
+                                            <fileSets>
+                                                <fileSet>
+                                                    <directory>${project.build.directory}/quarkus-app</directory>
+                                                    <outputDirectory>quarkus</outputDirectory>
+                                                </fileSet>
+                                            </fileSets>
+                                        </layer>
+                                    </layers>
+                                </assembly>
+                                <entryPoint>
+                                    <exec>
+                                        <arg>java</arg>
+                                        <arg>-jar</arg>
+                                        <arg>/maven/quarkus/quarkus-run.jar</arg>
+                                    </exec>
+                                </entryPoint>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>resource</goal>
+                            <goal>push</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Copy kubernetes resources to target/kubernetes -->
+                            <outputDirectory>${project.build.directory}/kubernetes</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/classes/META-INF/jkube</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
