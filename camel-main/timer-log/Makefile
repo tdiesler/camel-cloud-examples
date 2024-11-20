@@ -1,5 +1,7 @@
 # Variables
 
+# make package CAMEL_CMD=camel
+CAMEL_CMD ?= jbang camel
 # make k3s-run RUN_MODE=dev
 RUN_MODE ?= logs
 
@@ -15,7 +17,7 @@ k3s-package: clean k3s-export
 	@./mvnw clean package
 
 k3s-export:
-	@jbang camel kubernetes export timer-log-route.yaml \
+	@$(CAMEL_CMD) kubernetes export timer-log-route.yaml \
 	   --gav=examples:timer-log:1.0.0 \
        --image-registry k3s-registry:30443 \
 	   --trait container.image-pull-policy=Always \
@@ -25,7 +27,7 @@ k3s-export:
 
 k3s-deploy:
 	@kubectl apply -f ./target/kubernetes/kubernetes.yml
-	@jbang camel kubernetes logs --name timer-log
+	@$(CAMEL_CMD) kubernetes logs --name timer-log
 
 k3s-delete:
 	@kubectl delete --all -f ./target/kubernetes/kubernetes.yml
@@ -34,7 +36,7 @@ k8s-package: clean k8s-export
 	@./mvnw clean package
 
 k8s-export:
-	@jbang camel kubernetes export timer-log-route.yaml \
+	@$(CAMEL_CMD) kubernetes export timer-log-route.yaml \
        --gav=examples:timer-log:1.0.0 \
        --trait container.image-pull-policy=IfNotPresent \
        --trait service.type=NodePort \
@@ -42,13 +44,13 @@ k8s-export:
 
 k8s-deploy:
 	@kubectl apply -f ./target/kubernetes/kubernetes.yml
-	@jbang camel kubernetes logs --name timer-log
+	@$(CAMEL_CMD) kubernetes logs --name timer-log
 
 k8s-delete:
 	@kubectl delete --all -f ./target/kubernetes/kubernetes.yml
 
 k8s-run:
-	@jbang camel kubernetes run timer-log-route.yaml --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run timer-log-route.yaml --$(RUN_MODE) \
        --gav=examples:timer-log:1.0.0 \
        --trait container.image-pull-policy=IfNotPresent \
        --trait service.type=NodePort \
@@ -63,7 +65,7 @@ oce-package: clean oce-export
 	@./mvnw clean package
 
 oce-export:
-	@jbang camel kubernetes export timer-log-route.yaml \
+	@$(CAMEL_CMD) kubernetes export timer-log-route.yaml \
        --gav=examples:timer-log:1.0.0 \
        --image-registry image-registry.openshift-image-registry.svc:5000 \
        --trait container.image-pull-policy=IfNotPresent \
@@ -72,13 +74,13 @@ oce-export:
 
 oce-deploy:
 	@kubectl apply -f ./target/kubernetes/openshift.yml
-	@jbang camel kubernetes logs --name timer-log
+	@$(CAMEL_CMD) kubernetes logs --name timer-log
 
 oce-delete:
 	@kubectl delete --all -f ./target/kubernetes/openshift.yml
 
 oce-run:
-	@jbang camel kubernetes run timer-log-route.yaml --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run timer-log-route.yaml --$(RUN_MODE) \
 	   --gav=examples:timer-log:1.0.0 \
        --image-registry image-registry.openshift-image-registry.svc:5000 \
        --trait container.image-pull-policy=IfNotPresent \
