@@ -95,6 +95,16 @@
         kubectl create secret generic registry-auth -n registry \
           --from-file=htpasswd="{{ user_home }}/.k3s/registry.password"
 
+    # Note, registry-creds need to exist in the namespace of deployments that use
+    # imagePullSecrets: registry-creds
+    - name: Create secret registry-creds
+      ansible.builtin.shell: |
+        kubectl delete secret docker-registry registry-creds --ignore-not-found
+        kubectl create secret docker-registry registry-creds \
+          --docker-server={{ registry_spec }} \
+          --docker-username={{ REGISTRY_USER }} \
+          --docker-password={{ REGISTRY_PASSWORD }}
+
     # K3S Registry Config ----------------------------------------------------------------------------------------------
 
     - name: Create k3s registries.yaml

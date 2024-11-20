@@ -87,7 +87,10 @@
       local_action:
         module: shell
         cmd: |
-          KUBECONFIG=~/.kube/config:{{ playbook_dir }}/k3s-{{ ansible_hostname }}.yaml \
+          kubectl config delete-context {{ ansible_hostname }} || true \
+          && kubectl config delete-cluster {{ ansible_hostname }} || true \
+          && kubectl config delete-user {{ ansible_hostname }} || true \
+          && KUBECONFIG=~/.kube/config:{{ playbook_dir }}/k3s-{{ ansible_hostname }}.yaml \
             kubectl config view --flatten > {{ playbook_dir }}/merged-config.yaml \
           && rm {{ playbook_dir }}/k3s-{{ ansible_hostname }}.yaml \
           && mv merged-config.yaml ~/.kube/config \
