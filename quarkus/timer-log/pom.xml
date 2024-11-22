@@ -9,7 +9,7 @@
     <version>1.0.0</version>
 
     <properties>
-        <project.build.outputTimestamp>2024-11-15T15:50:11Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2024-11-28T15:11:35Z</project.build.outputTimestamp>
         <compiler-plugin.version>3.13.0</compiler-plugin.version>
         <failsafe.useModulePath>false</failsafe.useModulePath>
         <maven.compiler.release>17</maven.compiler.release>
@@ -17,16 +17,16 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.version>3.16.3</quarkus.platform.version>
-        <jkube.container-image.registry>k3s-registry:30443</jkube.container-image.registry>
-        <jkube.container-image.name>k3s-registry:30443/examples/timer-log:1.0.0</jkube.container-image.name>
-        <jkube.container-image.imagePullPolicy>Always</jkube.container-image.imagePullPolicy>
-        <jkube.build.strategy>jib</jkube.build.strategy>
-        <jkube.skip.push>false</jkube.skip.push>
-        <jkube.maven.plugin>kubernetes-maven-plugin</jkube.maven.plugin>
+        <quarkus.platform.version>3.16.4</quarkus.platform.version>
+        <jkube.container-image.registry>image-registry.openshift-image-registry.svc:5000</jkube.container-image.registry>
+        <jkube.container-image.name>image-registry.openshift-image-registry.svc:5000/examples/timer-log:1.0.0</jkube.container-image.name>
+        <jkube.container-image.imagePullPolicy>IfNotPresent</jkube.container-image.imagePullPolicy>
+        <jkube.maven.plugin>openshift-maven-plugin</jkube.maven.plugin>
+        <jkube.build.strategy>docker</jkube.build.strategy>
+        <jkube.skip.push>true</jkube.skip.push>
         <jkube.version>1.17.0</jkube.version>
         <skipITs>true</skipITs>
-        <surefire-plugin.version>3.1.2</surefire-plugin.version>
+        <surefire-plugin.version>3.5.2</surefire-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -250,7 +250,7 @@
                                       <artifactItem>
                                         <groupId>org.jolokia</groupId>
                                         <artifactId>jolokia-agent-jvm</artifactId>
-                                        <version>2.1.0</version>
+                                        <version>2.1.2</version>
                                         <type>jar</type>
                                         <classifier>javaagent</classifier>
                                       </artifactItem>

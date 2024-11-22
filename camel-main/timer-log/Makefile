@@ -20,12 +20,12 @@ k3s-package: clean k3s-export
 
 k3s-export:
 	@$(CAMEL_CMD) kubernetes export timer-log-route.yaml \
-	   --gav=examples:timer-log:1.0.0 \
-       --image-registry k3s-registry:30443 \
-	   --trait container.image-pull-policy=Always \
-	   --trait container.image-push=true \
-	   --trait service.type=NodePort \
-	   --runtime=camel-main
+	--gav=examples:timer-log:1.0.0 \
+	--image-registry k3s-registry:30443 \
+	--trait container.image-pull-policy=Always \
+	--trait container.image-push=true \
+	--trait service.type=NodePort \
+	--runtime=camel-main
 
 k3s-deploy:
 	@kubectl apply -f ./target/kubernetes/kubernetes.yml
@@ -36,12 +36,12 @@ k3s-delete:
 
 k3s-run:
 	@$(CAMEL_CMD) kubernetes run timer-log-route.yaml --$(RUN_MODE) \
-       --gav=examples:timer-log:1.0.0 \
-       --image-registry k3s-registry:30443 \
-	   --trait container.image-pull-policy=Always \
-	   --trait container.image-push=true \
-	   --trait service.type=NodePort \
-       --runtime=camel-main
+	--gav=examples:timer-log:1.0.0 \
+	--image-registry k3s-registry:30443 \
+	--trait container.image-pull-policy=Always \
+	--trait container.image-push=true \
+	--trait service.type=NodePort \
+	--runtime=camel-main
 
 # Kubernetes ===========================================================================================================
 
@@ -50,10 +50,11 @@ k8s-package: clean k8s-export
 
 k8s-export:
 	@$(CAMEL_CMD) kubernetes export timer-log-route.yaml \
-       --gav=examples:timer-log:1.0.0 \
-       --trait container.image-pull-policy=IfNotPresent \
-       --trait service.type=NodePort \
-       --runtime=camel-main
+	--gav=examples:timer-log:1.0.0 \
+	--trait container.image-pull-policy=IfNotPresent \
+	--trait service.type=NodePort \
+	--image-builder=docker \
+	--runtime=camel-main
 
 k8s-deploy:
 	@kubectl apply -f ./target/kubernetes/kubernetes.yml
@@ -64,10 +65,11 @@ k8s-delete:
 
 k8s-run:
 	@$(CAMEL_CMD) kubernetes run timer-log-route.yaml --$(RUN_MODE) \
-       --gav=examples:timer-log:1.0.0 \
-       --trait container.image-pull-policy=IfNotPresent \
-       --trait service.type=NodePort \
-       --runtime=camel-main
+	--gav=examples:timer-log:1.0.0 \
+	--trait container.image-pull-policy=IfNotPresent \
+	--trait service.type=NodePort \
+	--image-builder=docker \
+	--runtime=camel-main
 
 # OpenShift ============================================================================================================
 
@@ -81,11 +83,11 @@ oce-package: clean oce-export
 
 oce-export:
 	@$(CAMEL_CMD) kubernetes export timer-log-route.yaml \
-       --gav=examples:timer-log:1.0.0 \
-       --image-registry image-registry.openshift-image-registry.svc:5000 \
-       --trait container.image-pull-policy=IfNotPresent \
-       --cluster-type openshift \
-       --runtime=camel-main
+	--gav=examples:timer-log:1.0.0 \
+	--image-registry image-registry.openshift-image-registry.svc:5000 \
+	--trait container.image-pull-policy=IfNotPresent \
+	--cluster-type=openshift \
+	--runtime=camel-main
 
 oce-deploy:
 	@kubectl apply -f ./target/kubernetes/openshift.yml
@@ -96,11 +98,11 @@ oce-delete:
 
 oce-run:
 	@$(CAMEL_CMD) kubernetes run timer-log-route.yaml --$(RUN_MODE) \
-	   --gav=examples:timer-log:1.0.0 \
-       --image-registry image-registry.openshift-image-registry.svc:5000 \
-       --trait container.image-pull-policy=IfNotPresent \
-       --cluster-type openshift \
-	   --runtime=camel-main
+	--gav=examples:timer-log:1.0.0 \
+	--image-registry image-registry.openshift-image-registry.svc:5000 \
+	--trait container.image-pull-policy=IfNotPresent \
+	--cluster-type=openshift \
+	--runtime=camel-main
 
 run-java:
 	@java -jar target/timer-log-1.0.0.jar

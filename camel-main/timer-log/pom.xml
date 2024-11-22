@@ -9,12 +9,12 @@
 
     <properties>
         <java.version>17</java.version>
-        <jkube.container-image.registry>k3s-registry:30443</jkube.container-image.registry>
-        <jkube.container-image.name>k3s-registry:30443/examples/timer-log:1.0.0</jkube.container-image.name>
-        <jkube.container-image.imagePullPolicy>Always</jkube.container-image.imagePullPolicy>
-        <jkube.build.strategy>jib</jkube.build.strategy>
-        <jkube.skip.push>false</jkube.skip.push>
-        <jkube.maven.plugin>kubernetes-maven-plugin</jkube.maven.plugin>
+        <jkube.container-image.registry>image-registry.openshift-image-registry.svc:5000</jkube.container-image.registry>
+        <jkube.container-image.name>image-registry.openshift-image-registry.svc:5000/examples/timer-log:1.0.0</jkube.container-image.name>
+        <jkube.container-image.imagePullPolicy>IfNotPresent</jkube.container-image.imagePullPolicy>
+        <jkube.maven.plugin>openshift-maven-plugin</jkube.maven.plugin>
+        <jkube.build.strategy>docker</jkube.build.strategy>
+        <jkube.skip.push>true</jkube.skip.push>
         <jkube.version>1.17.0</jkube.version>
     </properties>
 
