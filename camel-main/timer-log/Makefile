@@ -1,15 +1,13 @@
 # Variables
 
-# make package CAMEL_CMD=camel
 CAMEL_CMD ?= jbang camel
-# make k3s-run RUN_MODE=dev
-RUN_MODE ?= logs
+RUN_MODE ?= dev
 
-package: k3s-package
+package: k8s-package
 
 clean:
 	@CUR_DIR=$$(pwd | awk -F'/' '{print $$(NF-1)"/"$$(NF)}') && echo "Clean $$CUR_DIR"
-	@rm -rf .camel-* .mvn src target mvnw mvnw.cmd pom.xml readme.md
+	@rm -rf .camel-* .mvn src target mvnw mvnw.cmd pom.xml README.md
 
 # K3S ==================================================================================================================
 
@@ -61,7 +59,7 @@ k8s-deploy:
 	@$(CAMEL_CMD) kubernetes logs --name timer-log
 
 k8s-delete:
-	@kubectl delete --all -f ./target/kubernetes/kubernetes.yml
+	@$(CAMEL_CMD) kubernetes delete --name timer-log
 
 k8s-run:
 	@$(CAMEL_CMD) kubernetes run timer-log-route.yaml --$(RUN_MODE) \
