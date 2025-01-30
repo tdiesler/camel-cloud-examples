@@ -1,0 +1,72 @@
+#
+# These two Kafka routes test producer/consumer access to a cluster deployed on Kubernetes.
+# Alongside, there is a Kubernetes service deployed that serves as the identity provider for Kafka.
+#
+# There two clients with respective ClientId/Secret configured in Keycloak:
+#
+#   - kafka-producer-client/kafka-producer-client-secret
+#   - kafka-consumer-client/kafka-consumer-client-secret
+#
+# Both, producer/consumer clients make a call to Keycloak to exchange their credentials for an access token.
+# This token is then passed to the Kafka server, which then validates the token with Keycloak.
+#
+# The routes are currently configured for with kafka/keycloak endpoint that are internal to the k8s cluster.route:
+#
+#   Keycloak: keycloak:8080
+#   Kafka:    kafka:9093
+#
+#   jbang camel kubernetes run kafka-oauth-route.yaml \
+#	--dep=io.strimzi:kafka-oauth-client:0.15.0 \
+#	--gav=examples:kafka-oauth:1.0.0 \
+#	--image-builder=docker \
+#	--runtime=camel-main
+#
+# The Kafka cluster also responds to external client requests, in which case the respective NodePorts need to used.
+#
+#   Keycloak: 127.0.0.1:30100
+#   Kafka:    127.0.0.1:30094
+#
+#   For configuration details see [Strimzi OAuth for Apache Kafka|https://github.com/strimzi/strimzi-kafka-oauth/blob/main/README.md#strimzi-oauth-for-apache-kafka]
+#
+- route:
+    from:
+      uri: "timer:yaml"
+      parameters:
+        period: "2000"
+        includeMetadata: true
+      steps:
+        - setBody:
+            simple: "Message ${exchangeProperty.CamelTimerCounter}"
+        - to:
+            uri: "kafka:test"
+            parameters:
+              brokers: kafka:9093
+              saslMechanism: OAUTHBEARER
+              securityProtocol: SASL_PLAINTEXT
+              saslJaasConfig: |-
+                org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required 
+                oauth.token.endpoint.uri="http://keycloak:8080/realms/demo/protocol/openid-connect/token" 
+                oauth.client.id="kafka-producer-client" 
+                oauth.client.secret="kafka-producer-client-secret" 
+                oauth.username.claim="preferred_username";
+              additionalProperties.sasl.login.callback.handler.class: io.strimzi.kafka.oauth.client.JaasClientOauthLoginCallbackHandler
+- route:
+    from:
+      uri: "kafka:test"
+      parameters:
+        brokers: kafka:9093
+        saslMechanism: OAUTHBEARER
+        securityProtocol: SASL_PLAINTEXT
+        saslJaasConfig: |-
+          org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required 
+          oauth.token.endpoint.uri="http://keycloak:8080/realms/demo/protocol/openid-connect/token" 
+          oauth.client.id="kafka-consumer-client" 
+          oauth.client.secret="kafka-consumer-client-secret" 
+          oauth.username.claim="preferred_username";
+        additionalProperties.sasl.login.callback.handler.class: io.strimzi.kafka.oauth.client.JaasClientOauthLoginCallbackHandler
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+            parameters:
+              showExchangePattern: false
+              showBodyType: false

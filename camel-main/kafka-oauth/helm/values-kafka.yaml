@@ -1,0 +1,4 @@
+
+deployments:
+  kafka:
+    name: "kafka"

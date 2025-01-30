@@ -1,0 +1,4 @@
+
+deployments:
+  keycloak:
+    name: "keycloak"
