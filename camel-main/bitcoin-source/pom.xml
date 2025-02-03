@@ -4,13 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>examples</groupId>
-    <artifactId>timer-log</artifactId>
+    <artifactId>btcprice</artifactId>
     <version>1.0.0</version>
 
     <properties>
         <java.version>17</java.version>
-        <jkube.container-image.name>examples/timer-log:1.0.0</jkube.container-image.name>
-        <jkube.container-image.imagePullPolicy>IfNotPresent</jkube.container-image.imagePullPolicy>
+        <jkube.container-image.name>examples/btcprice:1.0.0</jkube.container-image.name>
         <jkube.skip.push>true</jkube.skip.push>
         <jkube.maven.plugin>kubernetes-maven-plugin</jkube.maven.plugin>
         <jkube.build.strategy>docker</jkube.build.strategy>
@@ -67,6 +66,22 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
+            <artifactId>camel-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-jsonpath</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-kamelet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-log</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
             <artifactId>camel-platform-http-main</artifactId>
         </dependency>
         <dependency>
@@ -75,7 +90,16 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
+            <artifactId>camel-xchange</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
             <artifactId>camel-yaml-dsl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel.kamelets</groupId>
+            <artifactId>camel-kamelets</artifactId>
+            <version>4.9.0</version>
         </dependency>
 
 
@@ -125,7 +149,7 @@
                 <artifactId>camel-maven-plugin</artifactId>
                 <version>4.10.0-SNAPSHOT</version>
                 <configuration>
-                    <mainClass>examples.timerlog.CamelApplication</mainClass>
+                    <mainClass>examples.btcprice.CamelApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
@@ -146,7 +170,7 @@
                     </descriptors>
                     <archive>
                         <manifest>
-                            <mainClass>examples.timerlog.CamelApplication</mainClass>
+                            <mainClass>examples.btcprice.CamelApplication</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Multi-Release>true</Multi-Release>

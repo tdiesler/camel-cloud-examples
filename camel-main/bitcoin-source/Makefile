@@ -18,6 +18,7 @@ k8s-export:
 	@$(CAMEL_CMD) kubernetes export btcprice-route.yaml \
 	--gav=examples:btcprice:1.0.0 \
 	--image-builder=docker \
+	--image-push=false \
 	--runtime=camel-main
 
 k8s-deploy:
@@ -31,9 +32,6 @@ k8s-run:
 	@$(CAMEL_CMD) kubernetes run btcprice-route.yaml --$(RUN_MODE) \
 	--gav=examples:btcprice:1.0.0 \
 	--image-builder=docker \
+	--image-push=false \
 	--runtime=camel-main
 
-# Plain Java ===========================================================================================================
-
-run-java:
-	@java -jar target/btcprice-1.0.0.jar

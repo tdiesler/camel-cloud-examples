@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.1</version>
+        <version>3.4.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -18,10 +18,10 @@
         <java.version>17</java.version>
         <jkube.container-image.name>examples/timer-log:1.0.0</jkube.container-image.name>
         <jkube.container-image.imagePullPolicy>IfNotPresent</jkube.container-image.imagePullPolicy>
+        <jkube.skip.push>true</jkube.skip.push>
         <jkube.maven.plugin>kubernetes-maven-plugin</jkube.maven.plugin>
         <jkube.build.strategy>docker</jkube.build.strategy>
-        <jkube.skip.push>true</jkube.skip.push>
-        <jkube.version>1.17.0</jkube.version>
+        <jkube.version>1.18.0</jkube.version>
     </properties>
 
     <dependencyManagement>
@@ -30,7 +30,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>3.4.1</version>
+                <version>3.4.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -121,11 +121,6 @@
                         <image>
                             <build>
                                 <from>eclipse-temurin:17</from>
-                                <!-- Supported only when using the jib build strategy -->
-                                <createImageOptions>
-                                    <platform>linux/amd64</platform>
-                                    <platform>linux/arm64</platform>
-                                </createImageOptions>
                                 <entryPoint>
                                     <exec>
                                         <arg>java</arg>

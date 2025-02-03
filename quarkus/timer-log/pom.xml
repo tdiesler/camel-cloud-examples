@@ -9,7 +9,7 @@
     <version>1.0.0</version>
 
     <properties>
-        <project.build.outputTimestamp>2025-01-15T14:03:39Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-02-03T10:37:57Z</project.build.outputTimestamp>
         <compiler-plugin.version>3.13.0</compiler-plugin.version>
         <failsafe.useModulePath>false</failsafe.useModulePath>
         <maven.compiler.release>17</maven.compiler.release>
@@ -17,13 +17,13 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.version>3.17.6</quarkus.platform.version>
+        <quarkus.platform.version>3.18.1</quarkus.platform.version>
         <jkube.container-image.name>examples/timer-log:1.0.0</jkube.container-image.name>
         <jkube.container-image.imagePullPolicy>IfNotPresent</jkube.container-image.imagePullPolicy>
+        <jkube.skip.push>true</jkube.skip.push>
         <jkube.maven.plugin>kubernetes-maven-plugin</jkube.maven.plugin>
         <jkube.build.strategy>docker</jkube.build.strategy>
-        <jkube.skip.push>true</jkube.skip.push>
-        <jkube.version>1.17.0</jkube.version>
+        <jkube.version>1.18.0</jkube.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.5.2</surefire-plugin.version>
     </properties>
@@ -111,11 +111,6 @@
                         <image>
                             <build>
                                 <from>eclipse-temurin:17</from>
-                                <!-- Supported only when using the jib build strategy -->
-                                <createImageOptions>
-                                    <platform>linux/amd64</platform>
-                                    <platform>linux/arm64</platform>
-                                </createImageOptions>
                                 <assembly>
                                     <layers>
                                         <layer>

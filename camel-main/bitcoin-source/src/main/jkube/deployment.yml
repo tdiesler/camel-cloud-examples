@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: btcprice
+    app.kubernetes.io/runtime: camel
+  name: btcprice
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: btcprice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: btcprice
+    spec:
+      containers:
+      - image: examples/btcprice:1.0.0
+        name: btcprice
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP

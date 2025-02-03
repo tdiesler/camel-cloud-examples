@@ -1,0 +1,12 @@
+- route:
+    from:
+      uri: "kamelet:bitcoin-source"
+      steps:
+        - transform:
+            expression:
+              jsonpath: "$.last"
+        - to:
+            uri: "kamelet:log-sink"
+            parameters:
+              showExchangePattern: false
+              showBodyType: false

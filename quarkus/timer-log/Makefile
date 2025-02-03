@@ -9,39 +9,7 @@ clean:
 	@CUR_DIR=$$(pwd | awk -F'/' '{print $$(NF-1)"/"$$(NF)}') && echo "Clean $$CUR_DIR"
 	@rm -rf .camel-* .mvn src target mvnw mvnw.cmd pom.xml README.md
 
-# K3S ==================================================================================================================
-
-k3s-package: clean k3s-export
-	# -Djkube.docker.username=<registry-user> -Djkube.docker.password=<registry-password>
-	# Alternatively: docker login k3s-registry:30443
-	@./mvnw clean package
-
-k3s-export:
-	@$(CAMEL_CMD) kubernetes export timer-log-route.yaml \
-	--gav=examples:timer-log:1.0.0 \
-	--image-registry k3s-registry:30443 \
-	--trait container.image-pull-policy=Always \
-	--trait container.image-push=true \
-	--trait service.type=NodePort \
-	--runtime=quarkus
-
-k3s-deploy:
-	@kubectl apply -f ./target/kubernetes/kubernetes.yml
-	@$(CAMEL_CMD) kubernetes logs --name timer-log
-
-k3s-delete:
-	@kubectl delete --all -f ./target/kubernetes/kubernetes.yml
-
-k3s-run:
-	@$(CAMEL_CMD) kubernetes run timer-log-route.yaml --$(RUN_MODE) \
-	--gav=examples:timer-log:1.0.0 \
-	--image-registry k3s-registry:30443 \
-	--trait container.image-pull-policy=Always \
-	--trait container.image-push=true \
-	--trait service.type=NodePort \
-	--runtime=quarkus
-
-# Kubernetes ===========================================================================================================
+# Local Kubernetes (e.g. DockerDesktop) ================================================================================
 
 k8s-package: clean k8s-export
 	@./mvnw clean package
@@ -52,6 +20,7 @@ k8s-export:
 	--trait container.image-pull-policy=IfNotPresent \
 	--trait service.type=NodePort \
 	--image-builder=docker \
+	--image-push=false \
 	--runtime=quarkus
 
 k8s-deploy:
@@ -67,6 +36,37 @@ k8s-run:
 	--trait container.image-pull-policy=IfNotPresent \
 	--trait service.type=NodePort \
 	--image-builder=docker \
+	--image-push=false \
+	--runtime=quarkus
+
+# K3S ==================================================================================================================
+
+k3s-package: clean k3s-export
+	# -Djkube.docker.username=<registry-user> -Djkube.docker.password=<registry-password>
+	# Alternatively: docker login k3s-registry:30443
+	@./mvnw clean package
+
+k3s-export:
+	@$(CAMEL_CMD) kubernetes export timer-log-route.yaml \
+	--gav=examples:timer-log:1.0.0 \
+	--image-registry k3s-registry:30443 \
+	--trait container.image-pull-policy=Always \
+	--trait service.type=NodePort \
+	--runtime=quarkus
+
+k3s-deploy:
+	@kubectl apply -f ./target/kubernetes/kubernetes.yml
+	@$(CAMEL_CMD) kubernetes logs --name timer-log
+
+k3s-delete:
+	@kubectl delete --all -f ./target/kubernetes/kubernetes.yml
+
+k3s-run:
+	@$(CAMEL_CMD) kubernetes run timer-log-route.yaml --$(RUN_MODE) \
+	--gav=examples:timer-log:1.0.0 \
+	--image-registry k3s-registry:30443 \
+	--trait container.image-pull-policy=Always \
+	--trait service.type=NodePort \
 	--runtime=quarkus
 
 # OpenShift ============================================================================================================
