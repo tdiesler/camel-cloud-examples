@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: platform-http
+    app.kubernetes.io/runtime: camel
+  name: platform-http
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: platform-http
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: platform-http
+    spec:
+      containers:
+      - image: examples/platform-http:1.0.0
+        imagePullPolicy: IfNotPresent
+        name: platform-http
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
