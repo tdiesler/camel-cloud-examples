@@ -1,0 +1,30 @@
+- route:
+    from:
+      uri: "platform-http:/"
+      steps:
+        - setBody:
+            simple: "resource:classpath:META-INF/resources/index.html"
+- route:
+    from:
+      uri: "platform-http:/static/styles.css"
+      steps:
+        - setBody:
+            simple: "resource:classpath:META-INF/resources/styles.css"
+- route:
+    from:
+      uri: "platform-http:/auth"
+      steps:
+        - process: "#class:org.apache.camel.support.processor.CamelLogProcessor"
+#- route:
+#    from:
+#      uri: "platform-http:/protected"
+#      steps:
+#        - process:
+#            ref: "org.apache.camel.cloud.oauth.OpenIDAuthProcessor"
+#        - setBody:
+#            simple: "resource:classpath:META-INF/resources/protected.html"
+#- route:
+#    from:
+#      uri: "platform-http:/logout"
+#      steps:
+#        - process: "#class:org.apache.camel.cloud.oauth.OpenIDLogoutProcessor('http://localhost:8080/')"

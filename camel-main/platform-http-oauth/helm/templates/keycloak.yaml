@@ -1,0 +1,77 @@
+{{- with .Values.deployments.keycloak }}
+# Keycloak Realm ConfigMap
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-realm-config
+  labels:
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/release: {{ $.Release.Name }}
+    app.kubernetes.io/revision: '{{ $.Release.Revision }}'
+data:
+  demo-realm.json: |-
+    {{- $.Files.Get "etc/camel-realm.json" | nindent 4 }}
+
+# Keycloak Deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  labels:
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/release: {{ $.Release.Name }}
+    app.kubernetes.io/revision: '{{ $.Release.Revision }}'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: keycloak
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: keycloak
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/release: {{ $.Release.Name }}
+        app.kubernetes.io/revision: '{{ $.Release.Revision }}'
+    spec:
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak:26.1.0
+          args: ["start-dev", "--import-realm"]
+          env:
+            - name: KC_BOOTSTRAP_ADMIN_USERNAME
+              value: admin
+            - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+              value: admin
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: keycloak-realm-config
+              mountPath: /opt/keycloak/data/import
+              readOnly: true
+      volumes:
+        - name: keycloak-realm-config
+          configMap:
+            name: keycloak-realm-config
+
+# Keycloak Service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  labels:
+    app.kubernetes.io/name: keycloak
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: {{ .nodePort }}
+  selector:
+    app.kubernetes.io/name: keycloak
+---
+{{- end }}

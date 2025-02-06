@@ -10,7 +10,7 @@
 # Both, producer/consumer clients make a call to Keycloak to exchange their credentials for an access token.
 # This token is then passed to the Kafka server, which then validates the token with Keycloak.
 #
-# The routes are currently configured for with kafka/keycloak endpoint that are internal to the k8s cluster.route:
+# The routes are currently configured for with kafka/keycloak endpoint that are internal to the k8s cluster.
 #
 #   Keycloak: keycloak:8080
 #   Kafka:    kafka:9093

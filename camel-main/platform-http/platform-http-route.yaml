@@ -1,6 +1,0 @@
-- route:
-    from:
-      uri: "platform-http:/hello"
-      steps:
-        - setBody:
-            constant: "Hello from Camel JBang!"

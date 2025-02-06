@@ -1,0 +1,4 @@
+apiVersion: v2
+name: platform-http-chart
+description: A Helm chart to deploy Keycloak
+version: 0.1.0
