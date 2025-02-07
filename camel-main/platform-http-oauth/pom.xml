@@ -72,8 +72,12 @@
             <artifactId>camel-platform-http-main</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-yaml-dsl</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.camel.cloud</groupId>
-            <artifactId>camel-cloud-oauth</artifactId>
+            <artifactId>camel-oauth</artifactId>
             <version>0.1.0-SNAPSHOT</version>
         </dependency>
 
@@ -124,7 +128,7 @@
                 <artifactId>camel-maven-plugin</artifactId>
                 <version>4.10.0-SNAPSHOT</version>
                 <configuration>
-                    <mainClass>com.example.WebAppMain</mainClass>
+                    <mainClass>examples.platformhttpoauth.CamelApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
@@ -145,7 +149,7 @@
                     </descriptors>
                     <archive>
                         <manifest>
-                            <mainClass>com.example.WebAppMain</mainClass>
+                            <mainClass>examples.platformhttpoauth.CamelApplication</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Multi-Release>true</Multi-Release>

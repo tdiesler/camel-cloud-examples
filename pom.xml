@@ -74,5 +74,6 @@
 
     <modules>
         <module>camel-oauth</module>
+        <module>camel-main/platform-http-oauth</module>
     </modules>
 </project>

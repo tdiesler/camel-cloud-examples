@@ -1,10 +1,10 @@
-package org.apache.camel.cloud.oauth;
+package org.apache.camel.oauth;
 
 public class TokenRequestParams {
 
     private String code;
     private String redirectUri;
-    private OpenIDFlowType flowType;
+    private OidcFlowType flowType;
 
     public String getCode() {
         return code;
@@ -24,11 +24,11 @@ public class TokenRequestParams {
         return this;
     }
 
-    public OpenIDFlowType getFlowType() {
+    public OidcFlowType getFlowType() {
         return flowType;
     }
 
-    public TokenRequestParams setFlowType(OpenIDFlowType flowType) {
+    public TokenRequestParams setFlowType(OidcFlowType flowType) {
         this.flowType = flowType;
         return this;
     }

@@ -1,11 +1,11 @@
-package com.example;
+package examples.platformhttpoauth;
 
 import org.apache.camel.main.Main;
 
-public class WebAppMain {
+public class CamelApplication {
 
     public static void main(String[] args) throws Exception {
-        Main main = new Main(WebAppMain.class);
+        Main main = new Main(CamelApplication.class);
         main.run(args);
     }
 

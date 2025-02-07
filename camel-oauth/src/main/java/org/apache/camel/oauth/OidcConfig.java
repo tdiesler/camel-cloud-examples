@@ -1,6 +1,6 @@
-package org.apache.camel.cloud.oauth;
+package org.apache.camel.oauth;
 
-public class OpenIDConfig {
+public class OidcConfig {
 
     private final String baseUrl;
     private String clientId;
@@ -12,7 +12,7 @@ public class OpenIDConfig {
     private String userInfoPath;
     private String introspectionPath;
 
-    public OpenIDConfig(String baseUrl) {
+    public OidcConfig(String baseUrl) {
         this.baseUrl = baseUrl;
     }
 
@@ -24,7 +24,7 @@ public class OpenIDConfig {
         return clientId;
     }
 
-    public OpenIDConfig setClientId(String clientId) {
+    public OidcConfig setClientId(String clientId) {
         this.clientId = clientId;
         return this;
     }
@@ -33,7 +33,7 @@ public class OpenIDConfig {
         return clientSecret;
     }
 
-    public OpenIDConfig setClientSecret(String clientSecret) {
+    public OidcConfig setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
         return this;
     }
@@ -42,7 +42,7 @@ public class OpenIDConfig {
         return authorizationPath;
     }
 
-    public OpenIDConfig setAuthorizationPath(String authorizationPath) {
+    public OidcConfig setAuthorizationPath(String authorizationPath) {
         this.authorizationPath = authorizationPath;
         return this;
     }
@@ -51,7 +51,7 @@ public class OpenIDConfig {
         return tokenPath;
     }
 
-    public OpenIDConfig setTokenPath(String tokenPath) {
+    public OidcConfig setTokenPath(String tokenPath) {
         this.tokenPath = tokenPath;
         return this;
     }
@@ -60,7 +60,7 @@ public class OpenIDConfig {
         return revocationPath;
     }
 
-    public OpenIDConfig setRevocationPath(String revocationPath) {
+    public OidcConfig setRevocationPath(String revocationPath) {
         this.revocationPath = revocationPath;
         return this;
     }
@@ -69,7 +69,7 @@ public class OpenIDConfig {
         return logoutPath;
     }
 
-    public OpenIDConfig setLogoutPath(String logoutPath) {
+    public OidcConfig setLogoutPath(String logoutPath) {
         this.logoutPath = logoutPath;
         return this;
     }
@@ -78,7 +78,7 @@ public class OpenIDConfig {
         return userInfoPath;
     }
 
-    public OpenIDConfig setUserInfoPath(String userInfoPath) {
+    public OidcConfig setUserInfoPath(String userInfoPath) {
         this.userInfoPath = userInfoPath;
         return this;
     }
@@ -87,7 +87,7 @@ public class OpenIDConfig {
         return introspectionPath;
     }
 
-    public OpenIDConfig setIntrospectionPath(String introspectionPath) {
+    public OidcConfig setIntrospectionPath(String introspectionPath) {
         this.introspectionPath = introspectionPath;
         return this;
     }

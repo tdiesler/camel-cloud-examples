@@ -1,8 +1,8 @@
-package org.apache.camel.cloud.oauth;
+package org.apache.camel.oauth;
 
 import java.util.Map;
 
-public interface OpenIDUser {
+public interface UserProfile {
 
     Map<String, Object> attributes();
     Map<String, Object> principal();

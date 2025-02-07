@@ -23,10 +23,3 @@ Port Forwarding
 podName=$(kubectl get pod -l app.kubernetes.io/name=platform-http-oauth -o jsonpath='{.items[0].metadata.name}')
 kubectl port-forward ${podName} 8080:8080
 ```
-
-TODOs
-----
-
-* Replace Java route definition with Yaml
-* Use k8s secret for clientSecret
-* Use envars for OIDC config

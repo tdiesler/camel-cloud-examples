@@ -1,4 +1,4 @@
-package org.apache.camel.cloud.oauth;
+package org.apache.camel.oauth;
 
 import java.util.List;
 

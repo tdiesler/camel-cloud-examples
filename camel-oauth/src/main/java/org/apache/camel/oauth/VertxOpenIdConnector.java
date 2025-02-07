@@ -1,4 +1,7 @@
-package org.apache.camel.cloud.oauth;
+package org.apache.camel.oauth;
+
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import io.vertx.core.Vertx;
 import io.vertx.ext.auth.User;
@@ -8,23 +11,24 @@ import io.vertx.ext.auth.oauth2.OAuth2FlowType;
 import io.vertx.ext.auth.oauth2.OAuth2Options;
 import io.vertx.ext.auth.oauth2.Oauth2Credentials;
 import io.vertx.ext.auth.oauth2.providers.OpenIDConnectAuth;
+import org.apache.camel.Exchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VertxOpenIDConnect implements OpenIDConnect {
+public class VertxOpenIdConnector implements OpenIdConnector {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final Vertx vertx;
-    private OpenIDConfig config;
+    private OidcConfig config;
     private OAuth2Auth oauth2;
 
-    public VertxOpenIDConnect(Vertx vertx) {
+    public VertxOpenIdConnector(Vertx vertx) {
         this.vertx = vertx;
     }
 
     @Override
-    public OpenIDConfig discover(OpenIDConfig config) throws Exception {
+    public void discover(OidcConfig config) throws Exception {
 
         OAuth2Options aux = new OAuth2Options()
                 .setSite(config.getBaseUrl())
@@ -43,8 +47,6 @@ public class VertxOpenIDConnect implements OpenIDConnect {
                 .setLogoutPath(aux.getLogoutPath())
                 .setUserInfoPath(aux.getUserInfoPath())
                 .setIntrospectionPath(aux.getIntrospectionPath());
-
-        return config;
     }
 
     @Override
@@ -60,12 +62,12 @@ public class VertxOpenIDConnect implements OpenIDConnect {
     @Override
     public String logoutRequestUrl(LogoutRequestParams params) {
         var postLogoutUrl = params.getRedirectUri();
-        var user = ((VertxOpenIDUser) params.getUser()).getDelegate();
+        var user = ((VertxUserProfile) params.getUser()).getDelegate();
         return oauth2.endSessionURL(user) + "&post_logout_redirect_uri=" + postLogoutUrl;
     }
 
     @Override
-    public OpenIDUser tokenRequest(TokenRequestParams params) {
+    public Optional<UserProfile> tokenRequest(TokenRequestParams params) {
 
         var creds = new Oauth2Credentials()
                 .setFlow(OAuth2FlowType.valueOf(params.getFlowType().name()))
@@ -77,6 +79,26 @@ public class VertxOpenIDConnect implements OpenIDConnect {
                 .toCompletableFuture()
                 .join();
 
-        return new VertxOpenIDUser(user);
+        return Optional.of(new VertxUserProfile(user));
+    }
+
+    @Override
+    public Optional<UserProfile> getUserProfile(Exchange exchange) {
+        var registry = exchange.getContext().getRegistry();
+        var userProfile = registry.lookupByNameAndType("OidcUserProfile", UserProfile.class);
+        return Optional.ofNullable(userProfile);
+    }
+
+    @Override
+    public void putUserProfile(Exchange exchange, UserProfile userProfile) {
+        // [TODO] GHI-4 Authenticated UserProfile binds to camel context rather than http session
+        var registry = exchange.getContext().getRegistry();
+        registry.bind("OidcUserProfile", userProfile);
+    }
+
+    @Override
+    public void removeUserProfile(Exchange exchange) {
+        var registry = exchange.getContext().getRegistry();
+        registry.unbind("OidcUserProfile");
     }
 }

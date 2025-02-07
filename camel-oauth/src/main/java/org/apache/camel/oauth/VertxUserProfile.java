@@ -1,14 +1,14 @@
-package org.apache.camel.cloud.oauth;
+package org.apache.camel.oauth;
 
 import java.util.Map;
 
 import io.vertx.ext.auth.User;
 
-public class VertxOpenIDUser implements OpenIDUser {
+public class VertxUserProfile implements UserProfile {
 
     private final User delegate;
 
-    public VertxOpenIDUser(User delegate) {
+    public VertxUserProfile(User delegate) {
         this.delegate = delegate;
     }
 

@@ -1,4 +1,4 @@
-package org.apache.camel.cloud.oauth;
+package org.apache.camel.oauth;
 
 public enum AuthRequestPromptOpts {
     NONE,

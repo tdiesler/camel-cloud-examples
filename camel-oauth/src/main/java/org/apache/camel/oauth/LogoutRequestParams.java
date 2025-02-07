@@ -1,15 +1,15 @@
-package org.apache.camel.cloud.oauth;
+package org.apache.camel.oauth;
 
 public class LogoutRequestParams {
 
-    private OpenIDUser user;
+    private UserProfile user;
     private String redirectUri;
 
-    public OpenIDUser getUser() {
+    public UserProfile getUser() {
         return user;
     }
 
-    public LogoutRequestParams setUser(OpenIDUser user) {
+    public LogoutRequestParams setUser(UserProfile user) {
         this.user = user;
         return this;
     }
