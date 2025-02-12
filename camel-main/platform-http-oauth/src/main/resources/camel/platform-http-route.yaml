@@ -25,12 +25,12 @@
 # 	   kubectl port-forward ${podName} 8080:8080
 #
 - beans:
-    - name: OidcAuthFlow
-      type: org.apache.camel.oauth.OidcAuthFlowProcessor
-    - name: OidcAuthCallback
-      type: org.apache.camel.oauth.OidcAuthCallbackProcessor
-    - name: OidcLogout
-      type: org.apache.camel.oauth.OidcLogoutProcessor
+    - name: AuthCodeFlow
+      type: org.apache.camel.oauth.AuthCodeFlowProcessor
+    - name: AuthCallback
+      type: org.apache.camel.oauth.AuthCallbackProcessor
+    - name: AuthLogout
+      type: org.apache.camel.oauth.AuthLogoutProcessor
 - route:
     from:
       uri: "platform-http:/"
@@ -48,13 +48,13 @@
       uri: "platform-http:/auth"
       steps:
         - process:
-            ref: OidcAuthCallback
+            ref: AuthCallback
 - route:
     from:
       uri: "platform-http:/protected"
       steps:
         - process:
-            ref: OidcAuthFlow
+            ref: AuthCodeFlow
         - setBody:
             simple: "resource:classpath:META-INF/resources/protected.html"
 - route:
@@ -62,4 +62,4 @@
       uri: "platform-http:/logout"
       steps:
         - process:
-            ref: OidcLogout
+            ref: AuthLogout

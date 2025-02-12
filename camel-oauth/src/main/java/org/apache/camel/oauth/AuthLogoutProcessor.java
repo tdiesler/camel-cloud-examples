@@ -1,30 +1,25 @@
 package org.apache.camel.oauth;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
-import org.apache.camel.spi.Registry;
 
-public class OidcLogoutProcessor extends AbstractOAuthProcessor {
+public class AuthLogoutProcessor extends AbstractOAuthProcessor {
 
     @Override
     public void process(Exchange exchange) {
         var context = exchange.getContext();
 
-        var maybeOidc = getOpenIdConnector(context);
-        if (maybeOidc.isPresent()) {
-            var oidc = maybeOidc.get();
+        var maybeOauth = getOAuthConnector(context);
+        if (maybeOauth.isPresent()) {
+            var oauth = maybeOauth.get();
 
-            var maybeUser = oidc.getUserProfile(exchange);
+            var maybeUser = oauth.getUserProfile(exchange);
             if (maybeUser.isPresent()) {
 
                 var user = maybeUser.get();
-                oidc.removeUserProfile(exchange);
+                oauth.removeUserProfile(exchange);
 
-                String postLogoutUrl = getProperty(exchange, CAMEL_OIDC_AUTH_LOGOUT_REDIRECT_URI).orElse(null);
-                var logoutUrl = oidc.logoutRequestUrl(new LogoutRequestParams()
+                String postLogoutUrl = getProperty(exchange, CAMEL_OAUTH_LOGOUT_REDIRECT_URI).orElse(null);
+                var logoutUrl = oauth.logoutRequestUrl(new LogoutRequestParams()
                         .setRedirectUri(postLogoutUrl)
                         .setUser(user));
 

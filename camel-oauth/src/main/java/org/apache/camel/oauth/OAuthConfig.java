@@ -1,6 +1,6 @@
 package org.apache.camel.oauth;
 
-public class OidcConfig {
+public class OAuthConfig {
 
     private final String baseUrl;
     private String clientId;
@@ -12,7 +12,7 @@ public class OidcConfig {
     private String userInfoPath;
     private String introspectionPath;
 
-    public OidcConfig(String baseUrl) {
+    public OAuthConfig(String baseUrl) {
         this.baseUrl = baseUrl;
     }
 
@@ -24,7 +24,7 @@ public class OidcConfig {
         return clientId;
     }
 
-    public OidcConfig setClientId(String clientId) {
+    public OAuthConfig setClientId(String clientId) {
         this.clientId = clientId;
         return this;
     }
@@ -33,7 +33,7 @@ public class OidcConfig {
         return clientSecret;
     }
 
-    public OidcConfig setClientSecret(String clientSecret) {
+    public OAuthConfig setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
         return this;
     }
@@ -42,7 +42,7 @@ public class OidcConfig {
         return authorizationPath;
     }
 
-    public OidcConfig setAuthorizationPath(String authorizationPath) {
+    public OAuthConfig setAuthorizationPath(String authorizationPath) {
         this.authorizationPath = authorizationPath;
         return this;
     }
@@ -51,7 +51,7 @@ public class OidcConfig {
         return tokenPath;
     }
 
-    public OidcConfig setTokenPath(String tokenPath) {
+    public OAuthConfig setTokenPath(String tokenPath) {
         this.tokenPath = tokenPath;
         return this;
     }
@@ -60,7 +60,7 @@ public class OidcConfig {
         return revocationPath;
     }
 
-    public OidcConfig setRevocationPath(String revocationPath) {
+    public OAuthConfig setRevocationPath(String revocationPath) {
         this.revocationPath = revocationPath;
         return this;
     }
@@ -69,7 +69,7 @@ public class OidcConfig {
         return logoutPath;
     }
 
-    public OidcConfig setLogoutPath(String logoutPath) {
+    public OAuthConfig setLogoutPath(String logoutPath) {
         this.logoutPath = logoutPath;
         return this;
     }
@@ -78,7 +78,7 @@ public class OidcConfig {
         return userInfoPath;
     }
 
-    public OidcConfig setUserInfoPath(String userInfoPath) {
+    public OAuthConfig setUserInfoPath(String userInfoPath) {
         this.userInfoPath = userInfoPath;
         return this;
     }
@@ -87,7 +87,7 @@ public class OidcConfig {
         return introspectionPath;
     }
 
-    public OidcConfig setIntrospectionPath(String introspectionPath) {
+    public OAuthConfig setIntrospectionPath(String introspectionPath) {
         this.introspectionPath = introspectionPath;
         return this;
     }

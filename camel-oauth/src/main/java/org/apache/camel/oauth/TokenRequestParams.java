@@ -4,7 +4,7 @@ public class TokenRequestParams {
 
     private String code;
     private String redirectUri;
-    private OidcFlowType flowType;
+    private OAuthFlowType flowType;
 
     public String getCode() {
         return code;
@@ -24,11 +24,11 @@ public class TokenRequestParams {
         return this;
     }
 
-    public OidcFlowType getFlowType() {
+    public OAuthFlowType getFlowType() {
         return flowType;
     }
 
-    public TokenRequestParams setFlowType(OidcFlowType flowType) {
+    public TokenRequestParams setFlowType(OAuthFlowType flowType) {
         this.flowType = flowType;
         return this;
     }

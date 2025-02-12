@@ -2,48 +2,44 @@ package org.apache.camel.oauth;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.camel.component.platform.http.vertx.VertxPlatformHttpRouter;
-import org.apache.camel.spi.PropertiesComponent;
-import org.apache.camel.spi.Registry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractOAuthProcessor implements Processor {
 
-    public static final String CAMEL_OIDC_AUTH_BASE_URI = "camel.oidc.auth.baseUri";
-    public static final String CAMEL_OIDC_AUTH_CLIENT_ID = "camel.oidc.auth.clientId";
-    public static final String CAMEL_OIDC_AUTH_CLIENT_SECRET = "camel.oidc.auth.clientSecret";
-    public static final String CAMEL_OIDC_AUTH_LOGOUT_REDIRECT_URI = "camel.oidc.auth.logout.redirectUri";
-    public static final String CAMEL_OIDC_AUTH_REDIRECT_URI = "camel.oidc.auth.redirectUri";
+    public static final String CAMEL_OAUTH_BASE_URI = "camel.oauth.baseUri";
+    public static final String CAMEL_OAUTH_CLIENT_ID = "camel.oauth.clientId";
+    public static final String CAMEL_OAUTH_CLIENT_SECRET = "camel.oauth.clientSecret";
+    public static final String CAMEL_OAUTH_LOGOUT_REDIRECT_URI = "camel.oauth.logout.redirectUri";
+    public static final String CAMEL_OAUTH_REDIRECT_URI = "camel.oauth.redirectUri";
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    Optional<OpenIdConnector> getOpenIdConnector(CamelContext context) {
-        return getOpenIdConnector(context, null);
+    Optional<OAuthConnector> getOAuthConnector(CamelContext context) {
+        return getOAuthConnector(context, null);
     }
 
-    Optional<OpenIdConnector> getOpenIdConnector(CamelContext context, Supplier<OpenIdConnector> supplier) {
+    Optional<OAuthConnector> getOAuthConnector(CamelContext context, Supplier<OAuthConnector> supplier) {
         var camelRegistry =context.getRegistry();
-        var oidc = camelRegistry.lookupByNameAndType("OpenIdConnector", OpenIdConnector.class);
-        if (oidc == null && supplier != null) {
-            oidc = supplier.get();
+        var oauth = camelRegistry.lookupByNameAndType("OAuthConnector", OAuthConnector.class);
+        if (oauth == null && supplier != null) {
+            oauth = supplier.get();
         }
-        return Optional.ofNullable(oidc);
+        return Optional.ofNullable(oauth);
     }
 
-    OpenIdConnector getRequiredOpenIdConnector(CamelContext context) {
-        return getOpenIdConnector(context, null).orElseThrow(() -> new NoSuchElementException("No OpenIdConnector"));
+    OAuthConnector assertOAuthConnector(CamelContext context) {
+        return getOAuthConnector(context, null).orElseThrow(() -> new NoSuchElementException("No OAuthConnector"));
     }
 
-    void putOpenIdConnector(CamelContext context, OpenIdConnector oidc) {
+    void storeOAuthConnector(CamelContext context, OAuthConnector oauth) {
         var camelRegistry = context.getRegistry();
-        camelRegistry.bind("OpenIdConnector", oidc);
+        camelRegistry.bind("OAuthConnector", oauth);
     }
 
     Optional<String> getProperty(Exchange exchange, String key) {

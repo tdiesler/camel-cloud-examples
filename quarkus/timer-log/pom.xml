@@ -9,7 +9,7 @@
     <version>1.0.0</version>
 
     <properties>
-        <project.build.outputTimestamp>2025-02-03T10:37:57Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-02-12T15:13:18Z</project.build.outputTimestamp>
         <compiler-plugin.version>3.13.0</compiler-plugin.version>
         <failsafe.useModulePath>false</failsafe.useModulePath>
         <maven.compiler.release>17</maven.compiler.release>
@@ -17,11 +17,13 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.version>3.18.1</quarkus.platform.version>
+        <quarkus.platform.version>3.18.2</quarkus.platform.version>
+        <jkube.image.name>examples/timer-log:1.0.0</jkube.image.name>
         <jkube.container-image.name>examples/timer-log:1.0.0</jkube.container-image.name>
         <jkube.container-image.imagePullPolicy>IfNotPresent</jkube.container-image.imagePullPolicy>
         <jkube.skip.push>true</jkube.skip.push>
         <jkube.maven.plugin>kubernetes-maven-plugin</jkube.maven.plugin>
+        <jkube.base.image>eclipse-temurin:17</jkube.base.image>
         <jkube.build.strategy>docker</jkube.build.strategy>
         <jkube.version>1.18.0</jkube.version>
         <skipITs>true</skipITs>
@@ -110,7 +112,7 @@
                     <images>
                         <image>
                             <build>
-                                <from>eclipse-temurin:17</from>
+                                <from>${jkube.base.image}</from>
                                 <assembly>
                                     <layers>
                                         <layer>

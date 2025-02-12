@@ -1,13 +1,12 @@
 package org.apache.camel.oauth;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.apache.camel.Exchange;
 
-public interface OpenIdConnector {
+public interface OAuthConnector {
 
-    void discover(OidcConfig config) throws Exception;
+    void discover(OAuthConfig config) throws Exception;
 
     String authRequestUrl(AuthRequestParams params);
 

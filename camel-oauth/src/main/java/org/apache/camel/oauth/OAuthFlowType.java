@@ -1,6 +1,6 @@
 package org.apache.camel.oauth;
 
-public enum OidcFlowType {
+public enum OAuthFlowType {
     AUTH_CODE,
     IMPLICIT;
 }

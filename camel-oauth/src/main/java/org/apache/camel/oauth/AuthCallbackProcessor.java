@@ -2,7 +2,7 @@ package org.apache.camel.oauth;
 
 import org.apache.camel.Exchange;
 
-public class OidcAuthCallbackProcessor extends AbstractOAuthProcessor {
+public class AuthCallbackProcessor extends AbstractOAuthProcessor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -23,22 +23,22 @@ public class OidcAuthCallbackProcessor extends AbstractOAuthProcessor {
             return;
         }
 
-        var oidc = getRequiredOpenIdConnector(context);
+        var oauth = assertOAuthConnector(context);
         try {
 
-            String redirectUri = getRequiredProperty(exchange, CAMEL_OIDC_AUTH_REDIRECT_URI);
-            var userProfile = oidc.tokenRequest(new TokenRequestParams()
+            String redirectUri = getRequiredProperty(exchange, CAMEL_OAUTH_REDIRECT_URI);
+            var userProfile = oauth.tokenRequest(new TokenRequestParams()
                     .setRedirectUri(redirectUri)
-                    .setFlowType(OidcFlowType.AUTH_CODE)
+                    .setFlowType(OAuthFlowType.AUTH_CODE)
                     .setCode(code)).orElseThrow();
 
             log.info("User Authenticated - attributes: {}", userProfile.attributes());
             log.info("User Authenticated - principal: {}", userProfile.principal());
 
-            oidc.putUserProfile(exchange, userProfile);
+            oauth.putUserProfile(exchange, userProfile);
 
             // [TODO] GHI-5 Post login url binds to camel context rather than http session
-            var postLoginUrl = registry.lookupByNameAndType("OidcPostLoginUrl", String.class);
+            var postLoginUrl = registry.lookupByNameAndType("OAuthPostLoginUrl", String.class);
 
             log.info("Redirect to: {}", postLoginUrl);
             exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, 302);

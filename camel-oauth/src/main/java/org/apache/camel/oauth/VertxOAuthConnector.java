@@ -1,7 +1,6 @@
 package org.apache.camel.oauth;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import io.vertx.core.Vertx;
 import io.vertx.ext.auth.User;
@@ -15,20 +14,20 @@ import org.apache.camel.Exchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VertxOpenIdConnector implements OpenIdConnector {
+public class VertxOAuthConnector implements OAuthConnector {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final Vertx vertx;
-    private OidcConfig config;
+    private OAuthConfig config;
     private OAuth2Auth oauth2;
 
-    public VertxOpenIdConnector(Vertx vertx) {
+    public VertxOAuthConnector(Vertx vertx) {
         this.vertx = vertx;
     }
 
     @Override
-    public void discover(OidcConfig config) throws Exception {
+    public void discover(OAuthConfig config) throws Exception {
 
         OAuth2Options aux = new OAuth2Options()
                 .setSite(config.getBaseUrl())
@@ -85,7 +84,7 @@ public class VertxOpenIdConnector implements OpenIdConnector {
     @Override
     public Optional<UserProfile> getUserProfile(Exchange exchange) {
         var registry = exchange.getContext().getRegistry();
-        var userProfile = registry.lookupByNameAndType("OidcUserProfile", UserProfile.class);
+        var userProfile = registry.lookupByNameAndType("OAuthUserProfile", UserProfile.class);
         return Optional.ofNullable(userProfile);
     }
 
@@ -93,12 +92,12 @@ public class VertxOpenIdConnector implements OpenIdConnector {
     public void putUserProfile(Exchange exchange, UserProfile userProfile) {
         // [TODO] GHI-4 Authenticated UserProfile binds to camel context rather than http session
         var registry = exchange.getContext().getRegistry();
-        registry.bind("OidcUserProfile", userProfile);
+        registry.bind("OAuthUserProfile", userProfile);
     }
 
     @Override
     public void removeUserProfile(Exchange exchange) {
         var registry = exchange.getContext().getRegistry();
-        registry.unbind("OidcUserProfile");
+        registry.unbind("OAuthUserProfile");
     }
 }
