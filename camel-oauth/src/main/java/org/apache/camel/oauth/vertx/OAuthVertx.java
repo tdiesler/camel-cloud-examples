@@ -39,8 +39,9 @@ public class OAuthVertx implements OAuth {
     @Override
     public void discover(OAuthConfig config) throws OAuthException {
 
+        var baseUrl = config.getBaseUrl();
         OAuth2Options aux = new OAuth2Options()
-                .setSite(config.getBaseUrl())
+                .setSite(baseUrl)
                 .setClientId(config.getClientId())
                 .setClientSecret(config.getClientSecret());
 
@@ -50,7 +51,7 @@ public class OAuthVertx implements OAuth {
                     .toCompletableFuture()
                     .get();
         } catch (Exception ex) {
-            throw new OAuthException("Cannot discover OAuth config", ex);
+            throw new OAuthException("Cannot discover OAuth config from: " + baseUrl, ex);
         }
 
         config.setAuthorizationPath(aux.getAuthorizationPath())
@@ -74,9 +75,10 @@ public class OAuthVertx implements OAuth {
     @Override
     public UserProfile authenticate(UserProfile user) throws OAuthException {
 
+        var scope = (String) user.principal().get("scope");
         var creds = new TokenCredentials()
                 .setToken(user.accessToken().orElseThrow())
-                .addScope("openid");
+                .addScope(scope);
 
         try {
             User vtxUser = oauth2.authenticate(creds)
@@ -127,8 +129,15 @@ public class OAuthVertx implements OAuth {
 
     @Override
     public String logoutRequestUrl(LogoutRequestParams params) {
-        var postLogoutUrl = params.getRedirectUri();
+
         var user = ((UserProfileVertx) params.getUser()).getVertxUser();
-        return oauth2.endSessionURL(user) + "&post_logout_redirect_uri=" + postLogoutUrl;
+        String endSessionURL = oauth2.endSessionURL(user);
+
+        var postLogoutUrl = params.getRedirectUri();
+        if (postLogoutUrl != null) {
+            endSessionURL += "&post_logout_redirect_uri=" + postLogoutUrl;
+        }
+
+        return endSessionURL;
     }
 }

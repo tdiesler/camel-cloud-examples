@@ -1,22 +1,21 @@
 #
 # This WebApp runs on the default platform-http component with an underlying Vertx engine.
-# Home and static content is not protected. Access to /protected requires user authetication in Keycloak
+# Home and static content is not protected. Access to /protected requires user authentication in Keycloak
 #
 # WebApp and Keycloak endpoints are configured for external access on:
 #
-#      Keycloak: 192.168.0.10:30100
-#      WebApp  : 127.0.0.1:8080
+#      Keycloak: https://keycloak.local:30443/
+#      WebApp  : http://127.0.0.1:8080
 #
 #      jbang camel kubernetes export platform-http-route.yaml files/webapp/* \
 # 	        --dep=org.apache.camel.cloud:camel-oauth:0.1.0-SNAPSHOT \
 # 	        --gav=examples:platform-http-oauth:1.0.0 \
-#           --property=camel.oidc.auth.baseUri=http://192.168.0.10:30100/realms/camel \
-#           --property=camel.oidc.auth.redirectUri=http://127.0.0.1:8080/auth \
-#           --property=camel.oidc.auth.logout.redirectUri=http://127.0.0.1:8080/ \
-#           --property=camel.oidc.auth.clientId=camel-client \
-# 	        --ignore-loading-error=true \
+#           --property=camel.oauth.baseUri=https://keycloak.local:30443/realms/camel \
+#           --property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
+#           --property=camel.oauth.logout.redirectUri=http://127.0.0.1:8080/ \
+#           --property=camel.oauth.clientId=camel-client \
 # 	        --trait container.image-pull-policy=IfNotPresent \
-# 	        --trait service.type=NodePort \
+# 	        --ignore-loading-error=true \
 # 	        --image-builder=docker \
 # 	        --image-push=false \
 # 	        --runtime=camel-main

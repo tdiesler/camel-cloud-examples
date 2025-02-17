@@ -8,28 +8,27 @@ public class OAuthLogoutProcessor extends AbstractOAuthProcessor {
     public void process(Exchange exchange) {
         var context = exchange.getContext();
 
-        var maybeOauth = findOAuth(context);
-        if (maybeOauth.isPresent()) {
-            var oauth = maybeOauth.get();
+        findOAuth(context).ifPresent(oauth -> {
 
-            var session = oauth.getSession(exchange);
-            var maybeUser = session.getUserProfile();
-            if (maybeUser.isPresent()) {
+            var maybeSession = oauth.getSession(exchange);
+            maybeSession.flatMap(OAuthSession::getUserProfile).ifPresent(user -> {
 
-                var user = maybeUser.get();
-                session.removeUserProfile();
+                maybeSession.get().removeUserProfile();
 
-                String postLogoutUrl = getProperty(exchange, CAMEL_OAUTH_LOGOUT_REDIRECT_URI).orElse(null);
-                var logoutUrl = oauth.logoutRequestUrl(new LogoutRequestParams()
+                var postLogoutUrl = getProperty(exchange, CAMEL_OAUTH_LOGOUT_REDIRECT_URI)
+                        .orElse(null);
+
+                var params = new LogoutRequestParams()
                         .setRedirectUri(postLogoutUrl)
-                        .setUser(user));
+                        .setUser(user);
+
+                var logoutUrl = oauth.logoutRequestUrl(params);
 
                 log.info("OAuth logout: {}", logoutUrl);
                 exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, 302);
                 exchange.getMessage().setHeader("Location", logoutUrl);
                 exchange.getMessage().setBody("");
-            }
-        }
+            });
+        });
     }
-
 }

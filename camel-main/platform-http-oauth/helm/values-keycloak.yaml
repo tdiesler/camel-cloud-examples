@@ -1,5 +1,0 @@
-deployments:
-  keycloak:
-    name: "keycloak"
-    nodePort: 30100
-

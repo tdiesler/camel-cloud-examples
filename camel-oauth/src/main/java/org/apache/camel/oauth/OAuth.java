@@ -18,8 +18,12 @@ public interface OAuth {
 
     String logoutRequestUrl(LogoutRequestParams params);
 
-    default OAuthSession getSession(Exchange exchange) {
-        return getSessionStore().getSession(exchange).orElse(null);
+    default Optional<OAuthSession> getSession(Exchange exchange) {
+        return getSessionStore().getSession(exchange);
+    }
+
+    default OAuthSession createSession(Exchange exchange) {
+        return getSessionStore().createSession(exchange);
     }
 
     OAuthSessionStore getSessionStore();

@@ -21,12 +21,12 @@ k8s-export:
 	@$(CAMEL_CMD) kubernetes export platform-http-route.yaml files/webapp/* \
 	--dep=org.apache.camel.cloud:camel-oauth:0.1.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
-	--property=camel.oauth.baseUri=http://192.168.0.10:30100/realms/camel \
+	--property=camel.oauth.baseUri=https://keycloak.local:30443/realms/camel \
 	--property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
 	--property=camel.oauth.logout.redirectUri=http://127.0.0.1:8080/ \
 	--property=camel.oauth.clientId=camel-client \
-	--ignore-loading-error=true \
 	--trait container.image-pull-policy=IfNotPresent \
+	--ignore-loading-error=true \
 	--image-builder=docker \
 	--image-push=false \
 	--runtime=camel-main
@@ -42,7 +42,7 @@ k8s-run:
 	@$(CAMEL_CMD) kubernetes run platform-http-route.yaml files/webapp/* --$(RUN_MODE) \
 	--dep=org.apache.camel.cloud:camel-oauth:0.1.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
-	--property=camel.oauth.baseUri=http://192.168.0.10:30100/realms/camel \
+	--property=camel.oauth.baseUri=https://keycloak.local:30443/realms/camel \
 	--property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
 	--property=camel.oauth.logout.redirectUri=http://127.0.0.1:8080/ \
 	--property=camel.oauth.clientId=camel-client \

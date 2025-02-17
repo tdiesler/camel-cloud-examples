@@ -15,7 +15,7 @@ public class OAuthCodeFlowProcessor extends AbstractOAuthProcessor {
         var context = exchange.getContext();
         var msg = exchange.getMessage();
 
-        logRequestHeaders(msg);
+        logRequestHeaders("OAuthCodeFlowProcessor", msg);
 
         // Find or create the OAuth instance
         //
@@ -24,15 +24,22 @@ public class OAuthCodeFlowProcessor extends AbstractOAuthProcessor {
             return factory.createOAuth(context);
         });
 
-        // Get the UserProfile from the Session
+        // Get or create the OAuth session
         //
-        var session = oauth.getSession(exchange);
-        var maybeUser = session.getUserProfile();
+        var session = oauth.getSession(exchange)
+                .or(() -> Optional.of(oauth.createSession(exchange)))
+                .get();
+
+        var userProfile = session.getUserProfile().orElse(null);
 
         // Verify an existing UserProfile
         //
-        if (maybeUser.isPresent()) {
-            var userProfile = maybeUser.get();
+        if (userProfile != null) {
+
+            log.info("Existing ...");
+            userProfile.logAttributes();
+            userProfile.logPrincipal();
+
             if (userProfile.ttl() < 0L) {
                 userProfile = oauth.refresh(userProfile);
                 log.info("Refreshed ...");
@@ -40,32 +47,23 @@ public class OAuthCodeFlowProcessor extends AbstractOAuthProcessor {
                 userProfile = oauth.authenticate(userProfile);
                 log.info("Authenticated ...");
             }
-            maybeUser = Optional.of(userProfile);
-        }
 
-        // Check authentication success
-        //
-        if (maybeUser.isPresent()) {
-            var userProfile = maybeUser.get();
             session.putUserProfile(userProfile);
             userProfile.logAttributes();
             userProfile.logPrincipal();
-            return;
-        } else {
-            session.removeUserProfile();
         }
 
         // If there is no authenticated UserProfile, or
         // it is not valid (anymore), initiate authentication
-        initiateAuthenticationCodeFlow(oauth, exchange);
+        if (userProfile == null) {
+            initiateAuthenticationCodeFlow(oauth, session, exchange);
+        }
 
         log.info("OAuthCodeFlowProcessor - Done");
     }
 
-    private void initiateAuthenticationCodeFlow(OAuth oauth, Exchange exchange) {
+    private void initiateAuthenticationCodeFlow(OAuth oauth, OAuthSession session, Exchange exchange) {
         var msg = exchange.getMessage();
-
-        var session = oauth.getSession(exchange);
 
         var postLoginUrl = msg.getHeader(Exchange.HTTP_URL, String.class);
         session.putValue("OAuthPostLoginUrl", postLoginUrl);
@@ -85,8 +83,8 @@ public class OAuthCodeFlowProcessor extends AbstractOAuthProcessor {
         var authUrl = oauth.authRequestUrl(params);
 
         log.info("Redirect to: {}", authUrl);
-        exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, 302);
-        exchange.getMessage().setHeader("Location", authUrl);
-        exchange.getMessage().setBody("");
+        msg.setHeader(Exchange.HTTP_RESPONSE_CODE, 302);
+        msg.setHeader("Location", authUrl);
+        msg.setBody("");
     }
 }

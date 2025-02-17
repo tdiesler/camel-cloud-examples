@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.camel.Exchange;
@@ -15,29 +16,44 @@ public class InMemorySessionStore implements OAuthSessionStore {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     private final Map<String, OAuthSession> sessions = new HashMap<>();
+    private final String cookieName = "oauth.session";
 
     @Override
     public Optional<OAuthSession> getSession(Exchange exchange) {
 
-        Map<String, String> cookies = getCookies(exchange);
-        var maybeSessionId = Optional.ofNullable(cookies.get("session"));
-        if (maybeSessionId.isEmpty()) {
-            log.warn("No 'session' Cookie in HTTP request");
+        var cookies = getCookies(exchange);
+
+        if (cookies.get(cookieName) == null) {
+            log.warn("No '{}' Cookie in HTTP request", cookieName);
             return Optional.empty();
         }
-        var sessionId = maybeSessionId.get();
 
+        var sessionId = cookies.get(cookieName);
         var session = sessions.get(sessionId);
         if (session == null) {
-            log.warn("Creating new OAuthSession for Cookie: {}", sessionId.substring(8) + "...");
-            session = new InMemorySession();
-            sessions.put(sessionId, session);
+            log.warn("No OAuthSession for: {}", sessionId);
+            return Optional.empty();
         }
 
         return Optional.of(session);
     }
 
+    public OAuthSession createSession(Exchange exchange) {
+
+        var session = new InMemorySession();
+        var sessionId = UUID.randomUUID().toString();
+        sessions.put(sessionId, session);
+
+        var msg = exchange.getMessage();
+        var cookie = "%s=%s; Path=/; HttpOnly; SameSite=None; Secure".formatted(cookieName, sessionId);
+        msg.setHeader("Set-Cookie", cookie);
+        log.info("New OAuthSession: 'Set-Cookie: {}'", cookie);
+
+        return session;
+    }
+
     private Map<String, String> getCookies(Exchange exchange) {
+
         var msg = exchange.getMessage();
         var maybeCookie = Optional.ofNullable(msg.getHeader("Cookie"));
         if (maybeCookie.isEmpty()) {

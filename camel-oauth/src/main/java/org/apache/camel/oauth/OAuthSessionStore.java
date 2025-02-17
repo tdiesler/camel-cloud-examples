@@ -7,4 +7,6 @@ import org.apache.camel.Exchange;
 public interface OAuthSessionStore {
 
     Optional<OAuthSession> getSession(Exchange exchange);
+
+    OAuthSession createSession(Exchange exchange);
 }

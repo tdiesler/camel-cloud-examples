@@ -12,7 +12,8 @@
     <properties>
         <java.version>17</java.version>
 
-        <camel.version>4.9.0</camel.version>
+        <camel.version>4.11.0-SNAPSHOT</camel.version>
+        <keycloak.version>26.0.4</keycloak.version>
         <log4j.version>2.23.1</log4j.version>
 
         <assembly.plugin.version>3.7.1</assembly.plugin.version>
@@ -42,6 +43,11 @@
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
                 <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-admin-client</artifactId>
+                <version>${keycloak.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

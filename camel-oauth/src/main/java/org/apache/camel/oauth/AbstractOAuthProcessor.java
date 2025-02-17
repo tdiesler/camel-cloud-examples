@@ -50,8 +50,8 @@ public abstract class AbstractOAuthProcessor implements Processor {
         return optval.orElseThrow(() -> new NoSuchElementException(key));
     }
 
-    protected void logRequestHeaders(Message msg) {
-        log.info("Request headers ...");
+    protected void logRequestHeaders(String msgPrefix, Message msg) {
+        log.info("{} - Request headers ...", msgPrefix);
         msg.getHeaders().forEach((k, v) -> {
             log.info("   {}: {}", k, v);
         });

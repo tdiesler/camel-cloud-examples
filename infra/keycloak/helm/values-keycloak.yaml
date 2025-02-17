@@ -1,0 +1,7 @@
+deployments:
+
+  keycloak:
+    name: "keycloak"
+    nodePortHttp:  30100
+    nodePortHttps: 30443
+
