@@ -25,6 +25,7 @@ k8s-export:
 	--property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
 	--property=camel.oauth.logout.redirectUri=http://127.0.0.1:8080/ \
 	--property=camel.oauth.clientId=camel-client \
+	--property=camel.oauth.clientSecret=camel-client-secret \
 	--trait container.image-pull-policy=IfNotPresent \
 	--ignore-loading-error=true \
 	--image-builder=docker \
@@ -46,6 +47,7 @@ k8s-run:
 	--property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
 	--property=camel.oauth.logout.redirectUri=http://127.0.0.1:8080/ \
 	--property=camel.oauth.clientId=camel-client \
+	--property=camel.oauth.clientSecret=camel-client-secret \
 	--trait container.image-pull-policy=IfNotPresent \
 	--image-builder=docker \
 	--image-push=false \

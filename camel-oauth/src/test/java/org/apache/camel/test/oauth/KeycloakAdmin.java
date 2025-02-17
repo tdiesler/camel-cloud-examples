@@ -47,11 +47,10 @@ class KeycloakAdmin {
 
     public KeycloakAdmin withClient(ClientParams params) {
         List<String> redirectUris = new ArrayList<>(List.of(params.redirectUri));
-        ClientRepresentation client = new ClientRepresentation();
         if (params.logoutRedirectUri != null) {
             redirectUris.add(params.logoutRedirectUri);
-            client.setAttributes(Map.of("post.logout.redirect.uris", params.logoutRedirectUri));
         }
+        ClientRepresentation client = new ClientRepresentation();
         client.setClientId(params.clientId);
         client.setSecret(params.clientSecret);
         client.setPublicClient(params.publicClient);

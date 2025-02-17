@@ -12,7 +12,7 @@ sudo keytool -import -alias keycloak -file ./helm/etc/keycloak.crt -keystore $JA
 sudo keytool -delete -alias keycloak -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit
 ```
 
-# Keycloak on Kubernetes
+## Keycloak on Kubernetes
 
 Deploy Keycloak as Identity Provider
 
@@ -30,7 +30,49 @@ kubectl config use-context docker-desktop \
 helm uninstall keycloak
 ```
 
-# Camel platform-http on Kubernetes
+## Keycloak Admin Tasks
+
+Create realm 'camel' if not already imported
+
+```
+kcadm config credentials --server https://keycloak.local:30443 --realm master --user admin --password admin
+
+kcadm create realms -s realm=camel -s enabled=true
+
+kcadm create clients -r camel \
+    -s clientId=camel-client \
+    -s publicClient=false \
+    -s standardFlowEnabled=true \
+    -s serviceAccountsEnabled=true \
+    -s "redirectUris=[\"http://127.0.0.1:8080/auth\"]" \
+    -s "attributes.\"post.logout.redirect.uris\"=\"http://127.0.0.1:8080/\""
+    
+clientId=$(kcadm get clients -r camel -q clientId=camel-client --fields id --format csv --noquotes)
+kcadm update clients/${clientId} -r camel -s secret="camel-client-secret"
+
+kcadm create users -r camel \
+    -s username=alice \
+    -s email=alice@example.com \
+    -s emailVerified=true \
+    -s firstName=Alice \
+    -s lastName=Brown \
+    -s enabled=true
+    
+userid=$(kcadm get users -r camel -q username=alice --fields id --format csv --noquotes)
+kcadm set-password -r camel --userid=${userid} --new-password alice    
+
+kcadm delete realms/camel -r master
+```
+
+Show client/user configuration
+
+```
+kcadm get clients -r camel | jq -r '.[] | select(.clientId=="camel-client")'
+
+kcadm get users -r camel | jq -r '.[] | select(.username=="alice")'
+```
+     
+## Camel platform-http on Kubernetes
 
 Port Forwarding
 

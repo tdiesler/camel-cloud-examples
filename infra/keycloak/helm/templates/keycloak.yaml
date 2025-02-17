@@ -57,7 +57,7 @@ spec:
     spec:
       containers:
         - name: keycloak
-          image: quay.io/keycloak/keycloak:26.1.2
+          image: quay.io/keycloak/keycloak:{{ .version }}
           args:
             - "start-dev"
             - "--https-port=8443"

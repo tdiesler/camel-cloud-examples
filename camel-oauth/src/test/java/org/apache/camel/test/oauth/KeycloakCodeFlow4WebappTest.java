@@ -13,10 +13,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.keycloak.admin.client.resource.RealmResource;
 
 import static org.apache.camel.oauth.AbstractOAuthProcessor.CAMEL_OAUTH_BASE_URI;
 import static org.apache.camel.oauth.AbstractOAuthProcessor.CAMEL_OAUTH_CLIENT_ID;
+import static org.apache.camel.oauth.AbstractOAuthProcessor.CAMEL_OAUTH_CLIENT_SECRET;
 import static org.apache.camel.oauth.AbstractOAuthProcessor.CAMEL_OAUTH_LOGOUT_REDIRECT_URI;
 import static org.apache.camel.oauth.AbstractOAuthProcessor.CAMEL_OAUTH_REDIRECT_URI;
 import static org.apache.camel.test.oauth.KeycloakAdmin.AdminParams;
@@ -30,9 +30,10 @@ class KeycloakCodeFlow4WebappTest {
     private static final int port = 8080; // AvailablePortFinder.getNextAvailable();
 
     private static final String APP_BASE_URL =  "http://127.0.0.1:" + port + "/";
-    private static final String KEYCLOAK_SERVER_URL = "https://127.0.0.1:30443";
+    private static final String KEYCLOAK_BASE_URL = "https://keycloak.local:30443/";
     private static final String TEST_REALM = "camel";
     private static final String TEST_CLIENT_ID = "camel-client";
+    private static final String TEST_CLIENT_SECRET = "camel-client-secret";
 
     private static KeycloakAdmin admin;
     private static CamelContext camelContext;
@@ -42,7 +43,7 @@ class KeycloakCodeFlow4WebappTest {
 
         String callbackUri = APP_BASE_URL + "auth";
 
-        admin = new KeycloakAdmin(new AdminParams(KEYCLOAK_SERVER_URL));
+        admin = new KeycloakAdmin(new AdminParams(KEYCLOAK_BASE_URL));
         Assumptions.assumeTrue(admin.isKeycloakRunning(), "Keycloak is not running");
 
         // Setup Keycloak realm, client, user
@@ -54,8 +55,10 @@ class KeycloakCodeFlow4WebappTest {
                             .setFirstName("Alice")
                             .setLastName("Brown"))
                     .withClient(new ClientParams(TEST_CLIENT_ID)
-                            .setRedirectUri(callbackUri)
-                            .setPublicClient(true));
+                            .setClientSecret(TEST_CLIENT_SECRET)
+                            .setLogoutRedirectUri(APP_BASE_URL)
+                            .setServiceAccountsEnabled(true)
+                            .setRedirectUri(callbackUri));
         }
 
         camelContext = new DefaultCamelContext();
@@ -78,10 +81,11 @@ class KeycloakCodeFlow4WebappTest {
         });
 
         PropertiesComponent props = camelContext.getPropertiesComponent();
-        props.addInitialProperty(CAMEL_OAUTH_BASE_URI, KEYCLOAK_SERVER_URL + "/realms/" + TEST_REALM);
+        props.addInitialProperty(CAMEL_OAUTH_BASE_URI, KEYCLOAK_BASE_URL + "realms/" + TEST_REALM);
         props.addInitialProperty(CAMEL_OAUTH_REDIRECT_URI, callbackUri);
         props.addInitialProperty(CAMEL_OAUTH_CLIENT_ID, TEST_CLIENT_ID);
-        props.addInitialProperty(CAMEL_OAUTH_LOGOUT_REDIRECT_URI, APP_BASE_URL + "/logout");
+        props.addInitialProperty(CAMEL_OAUTH_CLIENT_SECRET, TEST_CLIENT_SECRET);
+        props.addInitialProperty(CAMEL_OAUTH_LOGOUT_REDIRECT_URI, APP_BASE_URL);
 
         MainHttpServer httpServer = new MainHttpServer();
         httpServer.setPort(port);
@@ -112,25 +116,20 @@ class KeycloakCodeFlow4WebappTest {
         System.out.println("✅ Keycloak realm, client, and user created successfully!");
         System.out.println("✅ Open: " + APP_BASE_URL);
 
-        Runtime.getRuntime().exec("open " + APP_BASE_URL);
+        // Open WebApp in Browser (works on MacOS)
+        // Runtime.getRuntime().exec("open " + APP_BASE_URL);
 
-        while (true) {
-            Thread.sleep(500L);
+        boolean logoutOk = false;
+        for (int i=0; !logoutOk && i < 40; i++) { // timeout after 20sec
             var options = camelContext.getGlobalOptions();
             if ("ok".equals(options.get("OAuthLogout"))) {
                 System.out.println("✅ OAuthLogout - ok");
-                break;
+                logoutOk = true;
             }
+            if (i % 4 == 0 ) {
+                System.out.printf("Waiting on logout: %d/%d - %s%n", i, 40, APP_BASE_URL+ "/logout");
+            }
+            Thread.sleep(500L);
         }
     }
 }
-
-//        HttpRequest request = HttpRequest.newBuilder()
-//                .uri(URI.create("http://localhost:" + port + "/public"))
-//                .build();
-//
-//        HttpResponse<String> response = HttpClient.newBuilder().build()
-//                .send(request, HttpResponse.BodyHandlers.ofString());
-//
-//        assertEquals(200, response.statusCode());
-//        assertEquals("Hello, Camel!", response.body());

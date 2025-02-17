@@ -7,15 +7,20 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLHandshakeException;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 class SSLCertTrustTest {
 
-    private final String HTTPS_SERVICE_URL = "https://127.0.0.1:30443/";
+    private static final String KEYCLOAK_SERVER_URL = "https://keycloak.local:30443/";
 
     @Test
     void testTrustedCertificate() {
-        Assertions.assertDoesNotThrow(() -> connectToUrl(HTTPS_SERVICE_URL), "Certificate should be trusted");
+
+        var admin = new KeycloakAdmin(new KeycloakAdmin.AdminParams(KEYCLOAK_SERVER_URL));
+        Assumptions.assumeTrue(admin.isKeycloakRunning(), "Keycloak is not running");
+
+        Assertions.assertDoesNotThrow(() -> connectToUrl(KEYCLOAK_SERVER_URL), "Certificate should be trusted");
     }
 
     @Test
