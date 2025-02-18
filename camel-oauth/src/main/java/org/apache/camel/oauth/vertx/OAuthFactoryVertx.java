@@ -7,6 +7,10 @@ import org.apache.camel.oauth.OAuthFactory;
 
 public final class OAuthFactoryVertx implements OAuthFactory {
 
+    // Register BouncyCastle as a security provider
+    // Does not fix: java.security.NoSuchAlgorithmException: RSA-OAEP
+    // Security.addProvider(new BouncyCastleProvider())
+
     public OAuth createOAuth(CamelContext ctx) {
         var registry = ctx.getRegistry();
         var router = VertxPlatformHttpRouter.lookup(ctx);
