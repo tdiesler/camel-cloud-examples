@@ -1,9 +1,5 @@
 package org.apache.camel.oauth;
 
-import java.util.Optional;
-
-import org.apache.camel.CamelContext;
-
 public class OAuthException extends RuntimeException {
 
     public OAuthException(String msg) {

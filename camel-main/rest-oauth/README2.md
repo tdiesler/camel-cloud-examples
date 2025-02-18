@@ -1,4 +1,10 @@
 
+## Building the route with Kaoto
+
+```
+docker run --rm --name kaoto -p8080:8080 quay.io/kaotoio/kaoto-app:main
+```
+
 ## Keycloak on Kubernetes
 
 This has moved to ../../infra/keycloak

@@ -1,0 +1,62 @@
+package org.apache.camel.oauth;
+
+import java.util.Optional;
+
+import org.apache.camel.Exchange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class OAuthBearerTokenProcessor extends AbstractOAuthProcessor {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
+    @Override
+    public void process(Exchange exchange) {
+        var context = exchange.getContext();
+        var msg = exchange.getMessage();
+
+        logRequestHeaders(procName, msg);
+
+        // Validate Authorization header
+        //
+        var authHeader = msg.getHeader("Authorization", String.class);
+        if (authHeader == null) {
+            log.error("No Authorization header in request");
+            msg.setHeader("CamelHttpResponseCode", 400);
+            msg.setBody("Authorization header");
+            return;
+        }
+
+        var toks = authHeader.split(" ");
+        if (toks.length != 2 || !"Bearer".equals(toks[0])) {
+            log.error("Invalid Authorization header: {}", authHeader);
+            msg.setHeader("CamelHttpResponseCode", 400);
+            msg.setBody("Invalid Authorization header");
+            return;
+        }
+
+        // Find or create the OAuth instance
+        //
+        var oauth = findOAuth(context).orElseGet(() -> {
+            var factory = OAuthFactory.getOAuthFactory(context);
+            return factory.createOAuth(exchange);
+        });
+
+        // Authenticate the bearer's access token
+        //
+        var access_token = toks[1];
+        var userProfile = oauth.authenticate(new TokenCredentials()
+                .setToken(access_token));
+
+        // Get or create the OAuthSession
+        //
+        var session = oauth.getSession(exchange)
+                .or(() -> Optional.of(oauth.createSession(exchange)))
+                .get();
+
+        session.putUserProfile(userProfile);
+        userProfile.logDetails("Authenticated");
+
+        log.info("{} - Done", procName);
+    }
+}

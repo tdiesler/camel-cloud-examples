@@ -4,6 +4,14 @@ import java.util.Optional;
 
 public interface OAuthSession {
 
+    String getSessionId();
+
+    <T> Optional<T> getValue(String key, Class<T> clazz);
+
+    <T> void putValue(String key, T value);
+
+    <T> Optional<T> removeValue(String key);
+
     default Optional<UserProfile> getUserProfile() {
         return getValue(UserProfile.class.getName(), UserProfile.class);
     }
@@ -15,10 +23,4 @@ public interface OAuthSession {
     default void removeUserProfile() {
         removeValue(UserProfile.class.getName());
     }
-
-    <T> Optional<T> getValue(String key, Class<T> clazz);
-
-    <T> void putValue(String key, T value);
-
-    <T> Optional<T> removeValue(String key);
 }

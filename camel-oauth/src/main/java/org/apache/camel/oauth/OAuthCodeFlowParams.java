@@ -2,7 +2,26 @@ package org.apache.camel.oauth;
 
 import java.util.List;
 
-public class AuthRequestParams {
+public class OAuthCodeFlowParams {
+
+    public enum AuthRequestDisplayOpts {
+        PAGE,
+        POPUP,
+        TOUCH,
+        WAP;
+    }
+
+    public enum AuthRequestPromptOpts {
+        NONE,
+        LOGIN,
+        CONSENT,
+        SELECT_ACCOUNT;
+    }
+
+    public enum AuthRequestResponseType {
+        CODE,
+        ID_TOKEN,
+    }
 
     private String clientId;
     private String redirectUri;
@@ -21,7 +40,7 @@ public class AuthRequestParams {
         return clientId;
     }
 
-    public AuthRequestParams setClientId(String clientId) {
+    public OAuthCodeFlowParams setClientId(String clientId) {
         this.clientId = clientId;
         return this;
     }
@@ -30,7 +49,7 @@ public class AuthRequestParams {
         return redirectUri;
     }
 
-    public AuthRequestParams setRedirectUri(String redirectUri) {
+    public OAuthCodeFlowParams setRedirectUri(String redirectUri) {
         this.redirectUri = redirectUri;
         return this;
     }
@@ -39,7 +58,7 @@ public class AuthRequestParams {
         return responseType;
     }
 
-    public AuthRequestParams setResponseType(AuthRequestResponseType responseType) {
+    public OAuthCodeFlowParams setResponseType(AuthRequestResponseType responseType) {
         this.responseType = responseType;
         return this;
     }
@@ -48,12 +67,12 @@ public class AuthRequestParams {
         return scopes;
     }
 
-    public AuthRequestParams setScope(String scope) {
+    public OAuthCodeFlowParams setScope(String scope) {
         this.scopes = List.of(scope);
         return this;
     }
 
-    public AuthRequestParams setScopes(List<String> scopes) {
+    public OAuthCodeFlowParams setScopes(List<String> scopes) {
         this.scopes = scopes;
         return this;
     }
@@ -62,7 +81,7 @@ public class AuthRequestParams {
         return state;
     }
 
-    public AuthRequestParams setState(String state) {
+    public OAuthCodeFlowParams setState(String state) {
         this.state = state;
         return this;
     }
@@ -71,7 +90,7 @@ public class AuthRequestParams {
         return display;
     }
 
-    public AuthRequestParams setDisplay(AuthRequestDisplayOpts display) {
+    public OAuthCodeFlowParams setDisplay(AuthRequestDisplayOpts display) {
         this.display = display;
         return this;
     }
@@ -80,7 +99,7 @@ public class AuthRequestParams {
         return prompt;
     }
 
-    public AuthRequestParams setPrompt(List<AuthRequestPromptOpts> prompt) {
+    public OAuthCodeFlowParams setPrompt(List<AuthRequestPromptOpts> prompt) {
         this.prompt = prompt;
         return this;
     }
@@ -89,7 +108,7 @@ public class AuthRequestParams {
         return maxAge;
     }
 
-    public AuthRequestParams setMaxAge(Integer maxAge) {
+    public OAuthCodeFlowParams setMaxAge(Integer maxAge) {
         this.maxAge = maxAge;
         return this;
     }
@@ -98,7 +117,7 @@ public class AuthRequestParams {
         return uiLocales;
     }
 
-    public AuthRequestParams setUiLocales(String uiLocales) {
+    public OAuthCodeFlowParams setUiLocales(String uiLocales) {
         this.uiLocales = uiLocales;
         return this;
     }
@@ -107,7 +126,7 @@ public class AuthRequestParams {
         return idTokenHint;
     }
 
-    public AuthRequestParams setIdTokenHint(String idTokenHint) {
+    public OAuthCodeFlowParams setIdTokenHint(String idTokenHint) {
         this.idTokenHint = idTokenHint;
         return this;
     }
@@ -116,7 +135,7 @@ public class AuthRequestParams {
         return loginHint;
     }
 
-    public AuthRequestParams setLoginHint(String loginHint) {
+    public OAuthCodeFlowParams setLoginHint(String loginHint) {
         this.loginHint = loginHint;
         return this;
     }
@@ -125,7 +144,7 @@ public class AuthRequestParams {
         return acrValues;
     }
 
-    public AuthRequestParams setAcrValues(String acrValues) {
+    public OAuthCodeFlowParams setAcrValues(String acrValues) {
         this.acrValues = acrValues;
         return this;
     }

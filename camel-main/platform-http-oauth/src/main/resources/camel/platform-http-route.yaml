@@ -27,8 +27,8 @@
 - beans:
     - name: OAuthCodeFlow
       type: org.apache.camel.oauth.OAuthCodeFlowProcessor
-    - name: OAuthCallback
-      type: org.apache.camel.oauth.OAuthCallbackProcessor
+    - name: OAuthCodeFlowCallback
+      type: org.apache.camel.oauth.OAuthCodeFlowCallbackProcessor
     - name: OAuthLogout
       type: org.apache.camel.oauth.OAuthLogoutProcessor
 - route:
@@ -48,7 +48,7 @@
       uri: "platform-http:/auth"
       steps:
         - process:
-            ref: OAuthCallback
+            ref: OAuthCodeFlowCallback
 - route:
     from:
       uri: "platform-http:/protected"

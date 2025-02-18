@@ -2,6 +2,9 @@ package org.apache.camel.oauth;
 
 import org.apache.camel.Exchange;
 
+import static org.apache.camel.oauth.OAuth.CAMEL_OAUTH_LOGOUT_REDIRECT_URI;
+import static org.apache.camel.oauth.OAuthProperties.getProperty;
+
 public class OAuthLogoutProcessor extends AbstractOAuthProcessor {
 
     @Override
@@ -18,11 +21,11 @@ public class OAuthLogoutProcessor extends AbstractOAuthProcessor {
                 var postLogoutUrl = getProperty(exchange, CAMEL_OAUTH_LOGOUT_REDIRECT_URI)
                         .orElse(null);
 
-                var params = new LogoutRequestParams()
+                var params = new OAuthLogoutParams()
                         .setRedirectUri(postLogoutUrl)
                         .setUser(user);
 
-                var logoutUrl = oauth.logoutRequestUrl(params);
+                var logoutUrl = oauth.buildLogoutRequestUrl(params);
 
                 log.info("OAuth logout: {}", logoutUrl);
                 exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, 302);

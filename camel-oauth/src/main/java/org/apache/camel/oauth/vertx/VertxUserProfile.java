@@ -8,11 +8,11 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.User;
 import org.apache.camel.oauth.UserProfile;
 
-public class UserProfileVertx extends UserProfile {
+public class VertxUserProfile extends UserProfile {
 
     private final User vtxUser;
 
-    public UserProfileVertx(User vtxUser) {
+    public VertxUserProfile(User vtxUser) {
         super(deepMap(vtxUser.attributes()), deepMap(vtxUser.principal()));
         this.vtxUser = vtxUser;
     }

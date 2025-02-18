@@ -3,15 +3,14 @@ package org.apache.camel.oauth;
 import java.util.Optional;
 
 import org.apache.camel.Exchange;
-import org.apache.camel.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.camel.oauth.OAuth.CAMEL_OAUTH_COOKIE;
-import static org.apache.camel.oauth.OAuth.CAMEL_OAUTH_REDIRECT_URI;
+import static org.apache.camel.oauth.OAuth.CAMEL_OAUTH_CLIENT_ID;
+import static org.apache.camel.oauth.OAuth.CAMEL_OAUTH_CLIENT_SECRET;
 import static org.apache.camel.oauth.OAuthProperties.getRequiredProperty;
 
-public class OAuthCodeFlowProcessor extends AbstractOAuthProcessor {
+public class OAuthClientCredentialsProcessor extends AbstractOAuthProcessor {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -45,26 +44,33 @@ public class OAuthCodeFlowProcessor extends AbstractOAuthProcessor {
             } else {
                 var creds = new UserCredentials(userProfile);
                 var updProfile = oauth.authenticate(creds);
-                userProfile.merge(updProfile);
+                updProfile.merge(updProfile);
                 userProfile.logDetails("Re-Authenticated");
             }
             session.putUserProfile(userProfile);
         }
 
-        // Fallback to the authorization code flow
+        // Fallback to client credential grant
         //
         if (session.getUserProfile().isEmpty()) {
 
-            var postLoginUrl = msg.getHeader(Exchange.HTTP_URL, String.class);
-            session.putValue("OAuthPostLoginUrl", postLoginUrl);
+            var clientId = getRequiredProperty(exchange, CAMEL_OAUTH_CLIENT_ID);
+            var clientSecret = getRequiredProperty(exchange, CAMEL_OAUTH_CLIENT_SECRET);
 
-            var redirectUri = getRequiredProperty(exchange, CAMEL_OAUTH_REDIRECT_URI);
-            var params = new OAuthCodeFlowParams().setRedirectUri(redirectUri);
-            var authRequestUrl = oauth.buildCodeFlowAuthRequestUrl(params);
+            var userProfile = oauth.authenticate(new ClientCredentials()
+                    .setClientSecret(clientSecret)
+                    .setClientId(clientId));
 
-            setSessionCookie(msg, session);
-            sendRedirect(msg, authRequestUrl);
+            session.putUserProfile(userProfile);
+            userProfile.logDetails("Authenticated");
         }
+
+        // Add Authorization: Bearer <access-token>
+        //
+        session.getUserProfile().ifPresent(userProfile -> {
+            var accessToken = userProfile.accessToken().orElseThrow(() -> new OAuthException("No access_token"));
+            msg.setHeader("Authorization", "Bearer " + accessToken);
+        });
 
         log.info("{} - Done", procName);
     }

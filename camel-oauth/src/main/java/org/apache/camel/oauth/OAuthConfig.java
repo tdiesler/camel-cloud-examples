@@ -2,7 +2,7 @@ package org.apache.camel.oauth;
 
 public class OAuthConfig {
 
-    private final String baseUrl;
+    private String baseUrl;
     private String clientId;
     private String clientSecret;
     private String authorizationPath;
@@ -12,12 +12,13 @@ public class OAuthConfig {
     private String userInfoPath;
     private String introspectionPath;
 
-    public OAuthConfig(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
     public String getBaseUrl() {
         return baseUrl;
+    }
+
+    public OAuthConfig setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+        return this;
     }
 
     public String getClientId() {

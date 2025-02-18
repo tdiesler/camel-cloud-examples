@@ -1,6 +1,6 @@
 package org.apache.camel.oauth;
 
-public class LogoutRequestParams {
+public class OAuthLogoutParams {
 
     private UserProfile user;
     private String redirectUri;
@@ -9,7 +9,7 @@ public class LogoutRequestParams {
         return user;
     }
 
-    public LogoutRequestParams setUser(UserProfile user) {
+    public OAuthLogoutParams setUser(UserProfile user) {
         this.user = user;
         return this;
     }
@@ -18,7 +18,7 @@ public class LogoutRequestParams {
         return redirectUri;
     }
 
-    public LogoutRequestParams setRedirectUri(String redirectUri) {
+    public OAuthLogoutParams setRedirectUri(String redirectUri) {
         this.redirectUri = redirectUri;
         return this;
     }

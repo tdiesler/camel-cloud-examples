@@ -11,7 +11,17 @@ public class InMemorySession implements OAuthSession {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
+    private final String sessionId;
     private final Map<String, Object> values = new HashMap<>();
+
+    public InMemorySession(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    @Override
+    public String getSessionId() {
+        return sessionId;
+    }
 
     @Override
     @SuppressWarnings("unchecked")

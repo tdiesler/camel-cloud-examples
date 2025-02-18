@@ -1,0 +1,46 @@
+#
+# This Rest Service runs on the default platform-http component with an underlying Vertx engine.
+# All access requires user authentication in Keycloak
+#
+# Rest Service and Keycloak endpoints are configured for external access on:
+#
+#      Keycloak: https://keycloak.local:30443/
+#      WebApp  : http://127.0.0.1:8080
+#
+#      jbang camel kubernetes export rest-oauth-files/* \
+# 	        --dep=org.apache.camel.cloud:camel-oauth:0.1.0-SNAPSHOT \
+# 	        --gav=examples:rest-oauth:1.0.0 \
+#           --property=camel.oauth.baseUri=https://keycloak.local:30443/realms/camel \
+#           --property=camel.oauth.clientId=camel-client \
+#           --property=camel.oauth.clientSecret=camel-client-secret \
+# 	        --trait container.image-pull-policy=IfNotPresent \
+# 	        --ignore-loading-error=true \
+# 	        --image-builder=docker \
+# 	        --image-push=false \
+# 	        --runtime=camel-main
+#
+- beans:
+    - name: OAuthBearerToken
+      type: org.apache.camel.oauth.OAuthBearerTokenProcessor
+    - name: OAuthClientCredentials
+      type: org.apache.camel.oauth.OAuthClientCredentialsProcessor
+- route:
+    from:
+      uri: "platform-http:/produce/data"
+      steps:
+          - process:
+              ref: OAuthClientCredentials
+          - to:
+              uri: "direct:produce-data"
+
+- route:
+    from:
+      uri: "direct:produce-data"
+      steps:
+        - process:
+            ref: OAuthBearerToken
+        - setHeader:
+            name: "Content-Type"
+            constant: "application/json"
+        - setBody:
+            simple: '{"msg": "Hello Kermit!"}'

@@ -86,13 +86,11 @@ public class UserProfile {
         principal.putAll(other.principal);
     }
 
-    public void logAttributes() {
-        log.info("User Attributes ...");
-        attributes().forEach((k, v) -> log.info("   {}: {}", k, v));
-    }
-
-    public void logPrincipal() {
-        log.info("User Principal ...");
-        principal().forEach((k, v) -> log.info("   {}: {}", k, v));
+    public void logDetails(String prefix) {
+        log.info("{}: {}", prefix, subject());
+        log.debug("User Attributes ...");
+        attributes().forEach((k, v) -> log.debug("   {}: {}", k, v));
+        log.debug("User Principal ...");
+        principal().forEach((k, v) -> log.debug("   {}: {}", k, v));
     }
 }
