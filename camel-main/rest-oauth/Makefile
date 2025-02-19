@@ -19,7 +19,7 @@ k8s-package: clean k8s-export
 
 k8s-export:
 	@$(CAMEL_CMD) kubernetes export rest-oauth-files/* \
-	--dep=org.apache.camel.cloud:camel-oauth:0.1.0-SNAPSHOT \
+	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
 	--property=camel.oauth.baseUri=https://keycloak.local:30443/realms/camel \
 	--property=camel.oauth.clientId=camel-client \
@@ -39,7 +39,7 @@ k8s-delete:
 
 k8s-run:
 	@$(CAMEL_CMD) kubernetes run rest-oauth-files/* --$(RUN_MODE) \
-	--dep=org.apache.camel.cloud:camel-oauth:0.1.0-SNAPSHOT \
+	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
 	--property=camel.oauth.baseUri=https://keycloak.local:30443/realms/camel \
 	--property=camel.oauth.clientId=camel-client \

@@ -23,7 +23,7 @@
         <jkube.maven.plugin>kubernetes-maven-plugin</jkube.maven.plugin>
         <jkube.base.image>eclipse-temurin:17</jkube.base.image>
         <jkube.build.strategy>docker</jkube.build.strategy>
-        <jkube.version>1.18.0</jkube.version>
+        <jkube.version>1.18.1</jkube.version>
     </properties>
 
     <dependencyManagement>

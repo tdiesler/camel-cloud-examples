@@ -85,7 +85,6 @@
     </build>
 
     <modules>
-        <module>camel-oauth</module>
         <module>camel-main/platform-http-oauth</module>
         <module>camel-main/rest-oauth</module>
     </modules>

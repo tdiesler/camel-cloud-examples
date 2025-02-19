@@ -19,7 +19,7 @@ k8s-package: clean k8s-export
 
 k8s-export:
 	@$(CAMEL_CMD) kubernetes export platform-http-files/* \
-	--dep=org.apache.camel.cloud:camel-oauth:0.1.0-SNAPSHOT \
+	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
 	--property=camel.oauth.baseUri=https://keycloak.local:30443/realms/camel \
 	--property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
@@ -41,7 +41,7 @@ k8s-delete:
 
 k8s-run:
 	@$(CAMEL_CMD) kubernetes run platform-http-files/* --$(RUN_MODE) \
-	--dep=org.apache.camel.cloud:camel-oauth:0.1.0-SNAPSHOT \
+	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
 	--property=camel.oauth.baseUri=https://keycloak.local:30443/realms/camel \
 	--property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
