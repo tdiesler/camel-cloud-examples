@@ -18,7 +18,7 @@ k8s-package: clean k8s-export
 	@./mvnw clean package
 
 k8s-export:
-	@$(CAMEL_CMD) kubernetes export platform-http-route.yaml files/webapp/* \
+	@$(CAMEL_CMD) kubernetes export platform-http-files/* \
 	--dep=org.apache.camel.cloud:camel-oauth:0.1.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
 	--property=camel.oauth.baseUri=https://keycloak.local:30443/realms/camel \
@@ -40,7 +40,7 @@ k8s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name platform-http-oauth
 
 k8s-run:
-	@$(CAMEL_CMD) kubernetes run platform-http-route.yaml files/webapp/* --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run platform-http-files/* --$(RUN_MODE) \
 	--dep=org.apache.camel.cloud:camel-oauth:0.1.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
 	--property=camel.oauth.baseUri=https://keycloak.local:30443/realms/camel \
