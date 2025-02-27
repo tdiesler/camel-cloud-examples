@@ -78,15 +78,15 @@ spec:
             - name: KAFKA_LISTENER_NAME_INTERNSECURE_OAUTHBEARER_SASL_JAAS_CONFIG
               value: |-
                 org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required
-                oauth.jwks.endpoint.uri="http://keycloak:8080/realms/demo/protocol/openid-connect/certs"
-                oauth.token.endpoint.uri="http://keycloak:8080/realms/demo/protocol/openid-connect/token"
+                oauth.jwks.endpoint.uri="http://k8s.local/kc/realms/camel/protocol/openid-connect/certs"
+                oauth.token.endpoint.uri="http://k8s.local/kc/realms/camel/protocol/openid-connect/token"
                 oauth.check.issuer=false
                 unsecuredLoginStringClaim_sub="unused";
             - name: KAFKA_LISTENER_NAME_EXTERNSECURE_OAUTHBEARER_SASL_JAAS_CONFIG
               value: |-
                 org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required
-                oauth.jwks.endpoint.uri="http://keycloak:8080/realms/demo/protocol/openid-connect/certs"
-                oauth.token.endpoint.uri="http://keycloak:8080/realms/demo/protocol/openid-connect/token"
+                oauth.jwks.endpoint.uri="http://k8s.local/kc/realms/camel/protocol/openid-connect/certs"
+                oauth.token.endpoint.uri="http://k8s.local/kc/realms/camel/protocol/openid-connect/token"
                 oauth.check.issuer=false
                 unsecuredLoginStringClaim_sub="unused";
 

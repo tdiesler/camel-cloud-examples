@@ -1,5 +1,5 @@
 {
-  "realm": "demo",
+  "realm": "camel",
   "accessTokenLifespan": 300,
   "ssoSessionMaxLifespan": 32140800,
   "ssoSessionIdleTimeout": 32140800,
@@ -9,11 +9,13 @@
     {
       "username": "alice",
       "enabled": true,
+      "firstName": "Alice",
+      "lastName": "Brown",
       "email": "alice@example.com",
       "credentials": [
         {
           "type": "password",
-          "value": "alice-password"
+          "value": "alice"
         }
       ],
       "realmRoles": [
@@ -152,6 +154,26 @@
     ]
   },
   "clients": [
+    {
+      "clientId": "camel-client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "camel-client-secret",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "consentRequired" : false,
+      "fullScopeAllowed" : false,
+      "redirectUris": [
+        "http://127.0.0.1:8080/auth"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "http://127.0.0.1:8080/"
+      }
+    },
     {
       "clientId": "kafka",
       "enabled": true,

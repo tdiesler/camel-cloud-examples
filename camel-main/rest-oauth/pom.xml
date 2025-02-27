@@ -73,16 +73,15 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
+            <artifactId>camel-oauth</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
             <artifactId>camel-platform-http-main</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-yaml-dsl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel.cloud</groupId>
-            <artifactId>camel-oauth</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
         </dependency>
 
 
@@ -183,11 +182,35 @@
                                 <from>${jkube.base.image}</from>
                                 <entryPoint>
                                     <exec>
+                                        <arg>/maven/cacert_entrypoint.sh</arg>
                                         <arg>java</arg>
                                         <arg>-jar</arg>
                                         <arg>/maven/${project.artifactId}-${project.version}.jar</arg>
                                     </exec>
                                 </entryPoint>
+                                <assembly>
+                                    <layers>
+                                        <layer>
+                                            <id>cacert-entrypoint</id>
+                                            <files>
+                                                <file>
+                                                    <source>etc/cacert_entrypoint.sh</source>
+                                                    <outputDirectory>.</outputDirectory>
+                                                    <fileMode>755</fileMode>
+                                                </file>
+                                            </files>
+                                        </layer>
+                                        <layer>
+                                            <id>trusted-cert</id>
+                                            <fileSets>
+                                                <fileSet>
+                                                    <directory>etc/tls</directory>
+                                                    <outputDirectory>tls</outputDirectory>
+                                                </fileSet>
+                                            </fileSets>
+                                        </layer>
+                                    </layers>
+                                </assembly>
                             </build>
                         </image>
                     </images>

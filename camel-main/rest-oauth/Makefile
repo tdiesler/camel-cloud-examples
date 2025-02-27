@@ -21,7 +21,7 @@ k8s-export:
 	@$(CAMEL_CMD) kubernetes export rest-oauth-files/* \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
-	--property=camel.oauth.baseUri=https://keycloak.local:30443/realms/camel \
+	--property=camel.oauth.baseUri=https://k8s.local/kc/realms/camel \
 	--property=camel.oauth.clientId=camel-client \
 	--property=camel.oauth.clientSecret=camel-client-secret \
 	--trait container.image-pull-policy=IfNotPresent \
@@ -41,7 +41,7 @@ k8s-run:
 	@$(CAMEL_CMD) kubernetes run rest-oauth-files/* --$(RUN_MODE) \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
-	--property=camel.oauth.baseUri=https://keycloak.local:30443/realms/camel \
+	--property=camel.oauth.baseUri=https://k8s.local/kc/realms/camel \
 	--property=camel.oauth.clientId=camel-client \
 	--property=camel.oauth.clientSecret=camel-client-secret \
 	--trait container.image-pull-policy=IfNotPresent \

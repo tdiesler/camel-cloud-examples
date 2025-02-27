@@ -1,0 +1,5 @@
+deployments:
+
+  whoami:
+    name: "whoami"
+

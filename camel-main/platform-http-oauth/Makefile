@@ -21,7 +21,7 @@ k8s-export:
 	@$(CAMEL_CMD) kubernetes export platform-http-files/* \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
-	--property=camel.oauth.baseUri=https://keycloak.local:30443/realms/camel \
+	--property=camel.oauth.baseUri=https://k8s.local/kc/realms/camel \
 	--property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
 	--property=camel.oauth.logout.redirectUri=http://127.0.0.1:8080/ \
 	--property=camel.oauth.clientId=camel-client \
@@ -43,7 +43,7 @@ k8s-run:
 	@$(CAMEL_CMD) kubernetes run platform-http-files/* --$(RUN_MODE) \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
-	--property=camel.oauth.baseUri=https://keycloak.local:30443/realms/camel \
+	--property=camel.oauth.baseUri=https://k8s.local/kc/realms/camel \
 	--property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
 	--property=camel.oauth.logout.redirectUri=http://127.0.0.1:8080/ \
 	--property=camel.oauth.clientId=camel-client \

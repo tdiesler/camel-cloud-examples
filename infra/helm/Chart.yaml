@@ -1,0 +1,4 @@
+apiVersion: v2
+name: camel-cloud-infra
+description: A Helm chart to deploy various camel-cloud infrastructure bits
+version: 0.1.0

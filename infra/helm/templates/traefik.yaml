@@ -1,0 +1,20 @@
+{{- with .Values.deployments.traefik }}
+
+# Traefik TLS Secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: traefik-tls
+  labels:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/release: {{ $.Release.Name }}
+    app.kubernetes.io/revision: '{{ $.Release.Revision }}'
+type: kubernetes.io/tls
+data:
+  tls.crt: {{ $.Files.Get "etc/traefik.crt" | b64enc }}
+  tls.key: {{ $.Files.Get "etc/traefik.key" | b64enc }}
+
+---
+{{- end }}
