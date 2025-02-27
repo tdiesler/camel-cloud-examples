@@ -1,28 +1,25 @@
 
-## Building the route with Kaoto
+# Keycloak on Kubernetes
 
-```
-docker run --rm --name kaoto -p8080:8080 quay.io/kaotoio/kaoto-app:main
-```
+This has moved to ../../infra
 
-## Keycloak on Kubernetes
-
-This has moved to ../../infra/keycloak
-
-## Notes
+# Build & Run
 
 There currently is an issue with adding TLS certificates through JKube
 https://issues.apache.org/jira/browse/CAMEL-21751
 
-Until this gets fixed we cannot access Keycloak on https from a pod on k8s.
+Until this gets fixed we manually need to add some stuff as documented in the Jira issue.
 
-For now, use ...
+For now, don't use `k8s-run` - instead use
 
 ```
-# Import TLS Certificate to Java Keystore (i.e. trust the certificate)
-sudo keytool -import -alias keycloak -file ./etc/keycloak.crt -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit
-
-make k8s-package
-mvn camel:run
+mvn clean install
+make k8s-deploy
+...
+podName=$(kubectl get pod -l app.kubernetes.io/name=rest-oauth -o jsonpath='{.items[0].metadata.name}')
+kubectl port-forward ${podName} 8080:8080
+...
+make k8s-delete
 ```
 
+curl http://127.0.0.1:8080/produce/data 

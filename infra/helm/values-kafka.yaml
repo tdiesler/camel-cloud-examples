@@ -1,4 +1,6 @@
 
+kafkaNodePort: 30094
+
 deployments:
   kafka:
     name: "kafka"
