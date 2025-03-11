@@ -59,7 +59,7 @@ k3s-deploy:
 	@$(CAMEL_CMD) kubernetes logs --name timer-log
 
 k3s-delete:
-	@kubectl delete --all -f ./target/kubernetes/kubernetes.yml
+	@$(CAMEL_CMD) kubernetes delete --name timer-log
 
 k3s-run:
 	@$(CAMEL_CMD) kubernetes run timer-log-route.yaml --$(RUN_MODE) \
@@ -92,7 +92,7 @@ oce-deploy:
 	@$(CAMEL_CMD) kubernetes logs --name timer-log
 
 oce-delete:
-	@kubectl delete --all -f ./target/kubernetes/openshift.yml
+	@$(CAMEL_CMD) kubernetes delete --name timer-log
 
 oce-run:
 	@$(CAMEL_CMD) kubernetes run timer-log-route.yaml --$(RUN_MODE) \

@@ -4,13 +4,13 @@
 #
 # Rest Service and Keycloak endpoints are configured for external access on:
 #
-#      Keycloak: https://k8s.local/kc/
+#      Keycloak: https://keycloak.local/kc/
 #      WebApp  : http://127.0.0.1:8080
 #
 #      jbang camel kubernetes export rest-oauth-files/* \
 #           --dep=org.apache.camel.cloud:camel-oauth:0.1.0-SNAPSHOT \
 #           --gav=examples:rest-oauth:1.0.0 \
-#           --property=camel.oauth.baseUri=https://k8s.local/kc/realms/camel \
+#           --property=camel.oauth.baseUri=https://keycloak.local/kc/realms/camel \
 #           --property=camel.oauth.clientId=camel-client \
 #           --property=camel.oauth.clientSecret=camel-client-secret \
 #           --trait container.image-pull-policy=IfNotPresent \

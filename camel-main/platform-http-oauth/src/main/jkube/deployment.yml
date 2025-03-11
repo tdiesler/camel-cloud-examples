@@ -15,7 +15,10 @@ spec:
         app.kubernetes.io/name: platform-http-oauth
     spec:
       containers:
-      - image: examples/platform-http-oauth:1.0.0
+      - env:
+        - name: SSL_TRUSTSTORE_CERTIFICATES
+          value: tls/cluster.crt
+        image: examples/platform-http-oauth:1.0.0
         imagePullPolicy: IfNotPresent
         name: platform-http-oauth
         ports:

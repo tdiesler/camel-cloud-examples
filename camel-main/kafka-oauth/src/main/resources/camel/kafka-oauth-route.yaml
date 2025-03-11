@@ -23,7 +23,7 @@
 #
 # The Kafka cluster also responds to external client requests, in which case the respective NodePorts need to used.
 #
-#   Keycloak: 127.0.0.1:30100
+#   Keycloak: 127.0.0.1
 #   Kafka:    127.0.0.1:30094
 #
 #   For configuration details see [Strimzi OAuth for Apache Kafka|https://github.com/strimzi/strimzi-kafka-oauth/blob/main/README.md#strimzi-oauth-for-apache-kafka]
@@ -45,7 +45,7 @@
               securityProtocol: SASL_PLAINTEXT
               saslJaasConfig: |-
                 org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required 
-                oauth.token.endpoint.uri="http://k8s.local/kc/realms/camel/protocol/openid-connect/token" 
+                oauth.token.endpoint.uri="http://keycloak.local/kc/realms/camel/protocol/openid-connect/token" 
                 oauth.client.id="kafka-producer-client" 
                 oauth.client.secret="kafka-producer-client-secret" 
                 oauth.username.claim="preferred_username";
@@ -59,7 +59,7 @@
         securityProtocol: SASL_PLAINTEXT
         saslJaasConfig: |-
           org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required 
-          oauth.token.endpoint.uri="http://k8s.local/kc/realms/camel/protocol/openid-connect/token" 
+          oauth.token.endpoint.uri="http://keycloak.local/kc/realms/camel/protocol/openid-connect/token" 
           oauth.client.id="kafka-consumer-client" 
           oauth.client.secret="kafka-consumer-client-secret" 
           oauth.username.claim="preferred_username";

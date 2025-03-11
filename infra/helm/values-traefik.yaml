@@ -1,4 +1,0 @@
-deployments:
-
-  traefik:
-    name: "traefik"

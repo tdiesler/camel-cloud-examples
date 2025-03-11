@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.2</version>
+        <version>3.4.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -16,12 +16,14 @@
 
     <properties>
         <java.version>17</java.version>
+        <jkube.image.name>examples/platform-http:1.0.0</jkube.image.name>
         <jkube.container-image.name>examples/platform-http:1.0.0</jkube.container-image.name>
         <jkube.container-image.imagePullPolicy>IfNotPresent</jkube.container-image.imagePullPolicy>
         <jkube.skip.push>true</jkube.skip.push>
         <jkube.maven.plugin>kubernetes-maven-plugin</jkube.maven.plugin>
+        <jkube.container-image.from>eclipse-temurin:17</jkube.container-image.from>
         <jkube.build.strategy>docker</jkube.build.strategy>
-        <jkube.version>1.18.0</jkube.version>
+        <jkube.version>1.18.1</jkube.version>
     </properties>
 
     <dependencyManagement>
@@ -30,7 +32,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>3.4.2</version>
+                <version>3.4.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -38,7 +40,7 @@
             <dependency>
                 <groupId>org.apache.camel.springboot</groupId>
                 <artifactId>camel-spring-boot-bom</artifactId>
-                <version>4.10.0-SNAPSHOT</version>
+                <version>4.11.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -120,14 +122,36 @@
                     <images>
                         <image>
                             <build>
-                                <from>eclipse-temurin:17</from>
+                                <from>${jkube.container-image.from}</from>
                                 <entryPoint>
                                     <exec>
-                                        <arg>java</arg>
-                                        <arg>-jar</arg>
-                                        <arg>/maven/${project.artifactId}-${project.version}.jar</arg>
+                                        <arg>/maven/run-java.sh</arg>
+                                        <arg>run</arg>
                                     </exec>
                                 </entryPoint>
+                                <assembly>
+                                    <layers>
+                                        <layer>
+                                            <id>entrypoint</id>
+                                            <files>
+                                                <file>
+                                                    <source>src/main/scripts/run-java.sh</source>
+                                                    <outputDirectory>.</outputDirectory>
+                                                    <fileMode>755</fileMode>
+                                                </file>
+                                            </files>
+                                        </layer>
+                                        <layer>
+                                            <id>tls</id>
+                                            <fileSets>
+                                                <fileSet>
+                                                    <directory>src/main/tls</directory>
+                                                    <outputDirectory>./tls</outputDirectory>
+                                                </fileSet>
+                                            </fileSets>
+                                        </layer>
+                                    </layers>
+                                </assembly>
                             </build>
                         </image>
                     </images>

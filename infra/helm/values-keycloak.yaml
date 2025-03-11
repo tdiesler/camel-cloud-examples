@@ -1,6 +1,0 @@
-deployments:
-
-  keycloak:
-    name: "keycloak"
-    version: 26.1.2
-

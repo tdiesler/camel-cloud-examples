@@ -15,7 +15,7 @@ k8s-package: clean k8s-export
 	@./mvnw clean package
 
 k8s-export:
-	@$(CAMEL_CMD) kubernetes export timer-log-route.yaml \
+	@$(CAMEL_CMD) kubernetes export timer-log-files/* \
 	--gav=examples:timer-log:1.0.0 \
 	--trait container.image-pull-policy=IfNotPresent \
 	--trait service.type=NodePort \
@@ -31,7 +31,7 @@ k8s-delete:
 	@kubectl delete --all -f ./target/kubernetes/kubernetes.yml
 
 k8s-run:
-	@$(CAMEL_CMD) kubernetes run timer-log-route.yaml --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run timer-log-files/* --$(RUN_MODE) \
 	--gav=examples:timer-log:1.0.0 \
 	--trait container.image-pull-policy=IfNotPresent \
 	--trait service.type=NodePort \
@@ -47,7 +47,7 @@ k3s-package: clean k3s-export
 	@./mvnw clean package
 
 k3s-export:
-	@$(CAMEL_CMD) kubernetes export timer-log-route.yaml \
+	@$(CAMEL_CMD) kubernetes export timer-log-files/* \
 	--gav=examples:timer-log:1.0.0 \
 	--image-registry k3s-registry:30443 \
 	--trait container.image-pull-policy=Always \
@@ -62,7 +62,7 @@ k3s-delete:
 	@kubectl delete --all -f ./target/kubernetes/kubernetes.yml
 
 k3s-run:
-	@$(CAMEL_CMD) kubernetes run timer-log-route.yaml --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run timer-log-files/* --$(RUN_MODE) \
 	--gav=examples:timer-log:1.0.0 \
 	--image-registry k3s-registry:30443 \
 	--trait container.image-pull-policy=Always \
@@ -80,7 +80,7 @@ oce-package: clean oce-export
 	@./mvnw clean package
 
 oce-export:
-	@$(CAMEL_CMD) kubernetes export timer-log-route.yaml \
+	@$(CAMEL_CMD) kubernetes export timer-log-files/* \
 	--gav=examples:timer-log:1.0.0 \
 	--image-registry image-registry.openshift-image-registry.svc:5000 \
 	--trait container.image-pull-policy=IfNotPresent \
@@ -95,7 +95,7 @@ oce-delete:
 	@kubectl delete --all -f ./target/kubernetes/openshift.yml
 
 oce-run:
-	@$(CAMEL_CMD) kubernetes run timer-log-route.yaml --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run timer-log-files/* --$(RUN_MODE) \
 	--gav=examples:timer-log:1.0.0 \
 	--image-registry image-registry.openshift-image-registry.svc:5000 \
 	--trait container.image-pull-policy=IfNotPresent \

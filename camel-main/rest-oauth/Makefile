@@ -18,12 +18,13 @@ k8s-package: clean k8s-export
 	@./mvnw clean package
 
 k8s-export:
-	@$(CAMEL_CMD) kubernetes export rest-oauth-files/* \
+	@$(CAMEL_CMD) kubernetes export rest-oauth-files/* tls/* \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
-	--property=camel.oauth.baseUri=https://k8s.local/kc/realms/camel \
+	--property=camel.oauth.baseUri=https://keycloak.local/kc/realms/camel \
 	--property=camel.oauth.clientId=camel-client \
 	--property=camel.oauth.clientSecret=camel-client-secret \
+	--property=ssl.truststore.certificates=tls/cluster.crt \
 	--trait container.image-pull-policy=IfNotPresent \
 	--ignore-loading-error=true \
 	--image-builder=docker \
@@ -38,12 +39,13 @@ k8s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name rest-oauth
 
 k8s-run:
-	@$(CAMEL_CMD) kubernetes run rest-oauth-files/* --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run rest-oauth-files/* tls/* --$(RUN_MODE) \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
-	--property=camel.oauth.baseUri=https://k8s.local/kc/realms/camel \
+	--property=camel.oauth.baseUri=https://keycloak.local/kc/realms/camel \
 	--property=camel.oauth.clientId=camel-client \
 	--property=camel.oauth.clientSecret=camel-client-secret \
+	--property=ssl.truststore.certificates=tls/cluster.crt \
 	--trait container.image-pull-policy=IfNotPresent \
 	--image-builder=docker \
 	--image-push=false \

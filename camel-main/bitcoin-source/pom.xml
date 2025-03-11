@@ -9,11 +9,13 @@
 
     <properties>
         <java.version>17</java.version>
+        <jkube.image.name>examples/btcprice:1.0.0</jkube.image.name>
         <jkube.container-image.name>examples/btcprice:1.0.0</jkube.container-image.name>
         <jkube.skip.push>true</jkube.skip.push>
         <jkube.maven.plugin>kubernetes-maven-plugin</jkube.maven.plugin>
+        <jkube.container-image.from>eclipse-temurin:17</jkube.container-image.from>
         <jkube.build.strategy>docker</jkube.build.strategy>
-        <jkube.version>1.18.0</jkube.version>
+        <jkube.version>1.18.1</jkube.version>
     </properties>
 
     <dependencyManagement>
@@ -22,7 +24,7 @@
             <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-bom</artifactId>
-                <version>4.10.0-SNAPSHOT</version>
+                <version>4.11.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -62,7 +64,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-health</artifactId>
+            <artifactId>camel-observability-services</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -99,7 +101,7 @@
         <dependency>
             <groupId>org.apache.camel.kamelets</groupId>
             <artifactId>camel-kamelets</artifactId>
-            <version>4.9.0</version>
+            <version>4.10.0</version>
         </dependency>
 
 
@@ -147,7 +149,7 @@
             <plugin>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-maven-plugin</artifactId>
-                <version>4.10.0-SNAPSHOT</version>
+                <version>4.11.0-SNAPSHOT</version>
                 <configuration>
                     <mainClass>examples.btcprice.CamelApplication</mainClass>
                 </configuration>
@@ -197,14 +199,36 @@
                     <images>
                         <image>
                             <build>
-                                <from>eclipse-temurin:17</from>
+                                <from>${jkube.container-image.from}</from>
                                 <entryPoint>
                                     <exec>
-                                        <arg>java</arg>
-                                        <arg>-jar</arg>
-                                        <arg>/maven/${project.artifactId}-${project.version}.jar</arg>
+                                        <arg>/maven/run-java.sh</arg>
+                                        <arg>run</arg>
                                     </exec>
                                 </entryPoint>
+                                <assembly>
+                                    <layers>
+                                        <layer>
+                                            <id>entrypoint</id>
+                                            <files>
+                                                <file>
+                                                    <source>src/main/scripts/run-java.sh</source>
+                                                    <outputDirectory>.</outputDirectory>
+                                                    <fileMode>755</fileMode>
+                                                </file>
+                                            </files>
+                                        </layer>
+                                        <layer>
+                                            <id>tls</id>
+                                            <fileSets>
+                                                <fileSet>
+                                                    <directory>src/main/tls</directory>
+                                                    <outputDirectory>./tls</outputDirectory>
+                                                </fileSet>
+                                            </fileSets>
+                                        </layer>
+                                    </layers>
+                                </assembly>
                             </build>
                         </image>
                     </images>
