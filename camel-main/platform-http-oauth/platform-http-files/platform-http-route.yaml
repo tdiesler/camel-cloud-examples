@@ -25,7 +25,7 @@
     - name: OAuthCodeFlow
       type: org.apache.camel.oauth.OAuthCodeFlowProcessor
     - name: OAuthCodeFlowCallback
-      type: org.apache.camel.oauth.OAuthCodeFlowCallbackProcessor
+      type: org.apache.camel.oauth.OAuthCodeFlowCallback
     - name: OAuthLogout
       type: org.apache.camel.oauth.OAuthLogoutProcessor
 - route:

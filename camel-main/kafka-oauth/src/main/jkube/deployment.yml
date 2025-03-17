@@ -15,7 +15,10 @@ spec:
         app.kubernetes.io/name: kafka-oauth
     spec:
       containers:
-      - image: examples/kafka-oauth:1.0.0
+      - env:
+        - name: SSL_TRUSTSTORE_CERTIFICATES
+          value: tls/cluster.crt
+        image: examples/kafka-oauth:1.0.0
         name: kafka-oauth
         ports:
         - containerPort: 8080

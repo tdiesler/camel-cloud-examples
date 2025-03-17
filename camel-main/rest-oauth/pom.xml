@@ -14,7 +14,7 @@
         <jkube.container-image.imagePullPolicy>IfNotPresent</jkube.container-image.imagePullPolicy>
         <jkube.skip.push>true</jkube.skip.push>
         <jkube.maven.plugin>kubernetes-maven-plugin</jkube.maven.plugin>
-        <jkube.base.image>eclipse-temurin:17</jkube.base.image>
+        <jkube.container-image.from>eclipse-temurin:17</jkube.container-image.from>
         <jkube.build.strategy>docker</jkube.build.strategy>
         <jkube.version>1.18.1</jkube.version>
     </properties>
@@ -65,7 +65,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-health</artifactId>
+            <artifactId>camel-observability-services</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -179,33 +179,31 @@
                     <images>
                         <image>
                             <build>
-                                <from>${jkube.base.image}</from>
+                                <from>${jkube.container-image.from}</from>
                                 <entryPoint>
                                     <exec>
-                                        <arg>/maven/cacert_entrypoint.sh</arg>
-                                        <arg>java</arg>
-                                        <arg>-jar</arg>
-                                        <arg>/maven/${project.artifactId}-${project.version}.jar</arg>
+                                        <arg>/maven/run-java.sh</arg>
+                                        <arg>run</arg>
                                     </exec>
                                 </entryPoint>
                                 <assembly>
                                     <layers>
                                         <layer>
-                                            <id>cacert-entrypoint</id>
+                                            <id>entrypoint</id>
                                             <files>
                                                 <file>
-                                                    <source>etc/cacert_entrypoint.sh</source>
+                                                    <source>src/main/scripts/run-java.sh</source>
                                                     <outputDirectory>.</outputDirectory>
                                                     <fileMode>755</fileMode>
                                                 </file>
                                             </files>
                                         </layer>
                                         <layer>
-                                            <id>trusted-cert</id>
+                                            <id>tls</id>
                                             <fileSets>
                                                 <fileSet>
-                                                    <directory>etc/tls</directory>
-                                                    <outputDirectory>tls</outputDirectory>
+                                                    <directory>src/main/tls</directory>
+                                                    <outputDirectory>./tls</outputDirectory>
                                                 </fileSet>
                                             </fileSets>
                                         </layer>

@@ -1,5 +1,9 @@
 
 SUBDIRS := \
+    bitcoin-source \
+    kafka-oauth \
+    platform-http-oauth \
+    rest-oauth \
     timer-log
 
 package:

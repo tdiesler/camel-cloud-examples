@@ -491,11 +491,15 @@ has_ssl_certificates() {
   truststoreCertFiles=""
   # Loop through each file in the CSV string
   for file in ${SSL_TRUSTSTORE_CERTIFICATES:-}; do
-      if [ -f "$file" ] && [ "${file##*.}" = "crt" ]; then
-          truststoreCertFiles="${truststoreCertFiles:+$truststoreCertFiles,}$file"
-          found=true
-          break
-      fi
+    # If file is not an absolute path, prepend the script dir
+    if [ "${file#/}" = "$file" ]; then
+        file="$(script_dir)/$file"
+    fi
+    if [ -f "$file" ] && [ "${file##*.}" = "crt" ]; then
+        truststoreCertFiles="${truststoreCertFiles:+$truststoreCertFiles,}$file"
+        found=true
+        break
+    fi
   done
   if [ "${found:-false}" = true ]; then
     truststoreFile=${JAVA_TRUSTSTORE_LOCATION:-/tmp/truststore.jks}

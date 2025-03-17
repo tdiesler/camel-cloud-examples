@@ -1,5 +1,7 @@
 
 SUBDIRS := \
+    platform-http \
+    platform-http-oauth \
     timer-log
 
 package:

@@ -1,0 +1,62 @@
+#
+# This WebApp runs on the default platform-http component with an underlying Vertx engine.
+# Home and static content is not protected. Access to /protected requires user authentication in Keycloak
+#
+# WebApp and Keycloak endpoints are configured for external access on:
+#
+#      Keycloak: https://keycloak.local/kc/
+#      WebApp  : http://127.0.0.1:8080
+#
+#      jbang camel kubernetes export platform-http-files/* \
+#           --dep=org.apache.camel.cloud:camel-oauth:0.1.0-SNAPSHOT \
+#           --gav=examples:platform-http-oauth:1.0.0 \
+#           --property=camel.oauth.baseUri=https://keycloak.local/kc/realms/camel \
+#           --property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
+#           --property=camel.oauth.logout.redirectUri=http://127.0.0.1:8080/ \
+#           --property=camel.oauth.clientId=camel-client \
+#           --property=camel.oauth.clientSecret=camel-client-secret \
+#           --trait container.image-pull-policy=IfNotPresent \
+#           --ignore-loading-error=true \
+#           --image-builder=docker \
+#           --image-push=false \
+#           --runtime=spring-boot
+#
+- beans:
+    - name: OAuthCodeFlow
+      type: org.apache.camel.oauth.OAuthCodeFlowProcessor
+    - name: OAuthCodeFlowCallback
+      type: org.apache.camel.oauth.OAuthCodeFlowCallback
+    - name: OAuthLogout
+      type: org.apache.camel.oauth.OAuthLogoutProcessor
+- route:
+    from:
+      uri: "platform-http:/"
+      steps:
+        - setBody:
+            simple: "resource:classpath:META-INF/resources/index.html"
+- route:
+    from:
+      uri: "platform-http:/static/styles.css"
+      steps:
+        - setBody:
+            simple: "resource:classpath:META-INF/resources/styles.css"
+- route:
+    from:
+      uri: "platform-http:/auth"
+      steps:
+        - process:
+            ref: OAuthCodeFlowCallback
+- route:
+    from:
+      uri: "platform-http:/protected"
+      steps:
+        - process:
+            ref: OAuthCodeFlow
+        - setBody:
+            simple: "resource:classpath:META-INF/resources/protected.html"
+- route:
+    from:
+      uri: "platform-http:/logout"
+      steps:
+        - process:
+            ref: OAuthLogout
