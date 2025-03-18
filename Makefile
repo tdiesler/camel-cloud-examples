@@ -1,5 +1,5 @@
 
-SUBDIRS := camel-main spring-boot quarkus
+SUBDIRS := camel-main quarkus spring-boot
 
 package:
 	@$(foreach dir, $(SUBDIRS), $(MAKE) -C $(dir) package;)
