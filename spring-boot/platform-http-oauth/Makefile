@@ -60,3 +60,53 @@ k8s-run:
 run-java:
 	@java -jar $(DEBUG_OPTS) target/platform-http-oauth-1.0.0.jar
 
+# OpenShift ============================================================================================================
+
+# Make sure that the target project/namespace is aligned with the image.group
+# https://quarkus.io/guides/deploying-to-openshift
+#
+# oc new-project examples
+
+oce-package: clean oce-export
+	@./mvnw clean package
+
+oce-fetch-cert:
+	@echo -n | openssl s_client -connect keycloak.$(OPENSHIFT_HOSTNAME):443 | openssl x509 > tls/cluster.crt
+
+oce-export: oce-fetch-cert
+	@$(CAMEL_CMD) kubernetes export platform-http-files/* tls/* \
+	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
+	--gav=examples:platform-http-oauth:1.0.0 \
+	--property=camel.oauth.baseUri=https://keycloak.$(OPENSHIFT_HOSTNAME)/realms/camel \
+	--property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
+	--property=camel.oauth.logout.redirectUri=http://127.0.0.1:8080/ \
+	--property=camel.oauth.clientId=camel-client \
+	--property=camel.oauth.clientSecret=camel-client-secret \
+	--property=ssl.truststore.certificates=tls/cluster.crt \
+	--image-registry image-registry.openshift-image-registry.svc:5000 \
+	--trait container.image-pull-policy=Always \
+	--ignore-loading-error=true \
+	--cluster-type=openshift \
+	--runtime=spring-boot
+
+oce-deploy:
+	@kubectl apply -f ./target/kubernetes/openshift.yml
+	@$(CAMEL_CMD) kubernetes logs --name platform-http-oauth
+
+oce-delete:
+	@$(CAMEL_CMD) kubernetes delete --name platform-http-oauth
+
+oce-run: oce-fetch-cert
+	@$(CAMEL_CMD) kubernetes run platform-http-files/* tls/* --$(RUN_MODE) \
+	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
+	--gav=examples:platform-http-oauth:1.0.0 \
+	--property=camel.oauth.baseUri=https://keycloak.$(OPENSHIFT_HOSTNAME)/realms/camel \
+	--property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
+	--property=camel.oauth.logout.redirectUri=http://127.0.0.1:8080/ \
+	--property=camel.oauth.clientId=camel-client \
+	--property=camel.oauth.clientSecret=camel-client-secret \
+	--property=ssl.truststore.certificates=tls/cluster.crt \
+	--image-registry image-registry.openshift-image-registry.svc:5000 \
+	--trait container.image-pull-policy=Always \
+	--cluster-type=openshift \
+	--runtime=spring-boot
