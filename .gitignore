@@ -30,3 +30,7 @@ bin/
 
 # OSX
 .DS_Store
+
+# Certs & Keys
+*.crt
+*.key

@@ -17,7 +17,11 @@ clean:
 k8s-package: clean k8s-export
 	@./mvnw clean package
 
-k8s-export:
+k8s-fetch-cert:
+	@mkdir -p tls
+	@echo -n | openssl s_client -connect keycloak.local:443 | openssl x509 > tls/cluster.crt
+
+k8s-export: k8s-fetch-cert
 	@$(CAMEL_CMD) kubernetes export rest-oauth-files/* tls/* \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
@@ -38,7 +42,7 @@ k8s-deploy:
 k8s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name rest-oauth
 
-k8s-run:
+k8s-run: k8s-fetch-cert
 	@$(CAMEL_CMD) kubernetes run rest-oauth-files/* tls/* --$(RUN_MODE) \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
@@ -49,6 +53,53 @@ k8s-run:
 	--trait container.image-pull-policy=IfNotPresent \
 	--image-builder=docker \
 	--image-push=false \
+	--runtime=camel-main
+
+# K3S ==================================================================================================================
+
+k3s-package: clean k3s-export
+	# -Djkube.docker.username=<registry-user> -Djkube.docker.password=<registry-password>
+	# Alternatively: docker login k3s-registry:30443
+	@./mvnw clean package
+
+k3s-fetch-cert:
+	@mkdir -p tls
+	@echo -n | openssl s_client -connect keycloak.k3s:443 | openssl x509 > tls/cluster.crt
+
+k3s-export: k3s-fetch-cert
+	@$(CAMEL_CMD) kubernetes export rest-oauth-files/* tls/* \
+	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
+	--gav=examples:rest-oauth:1.0.0 \
+	--property=camel.oauth.baseUri=https://keycloak.k3s/kc/realms/camel \
+	--property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
+	--property=camel.oauth.logout.redirectUri=http://127.0.0.1:8080/ \
+	--property=camel.oauth.clientId=camel-client \
+	--property=camel.oauth.clientSecret=camel-client-secret \
+	--property=ssl.truststore.certificates=tls/cluster.crt \
+	--ignore-loading-error=true \
+	--image-registry k3s-registry:30443 \
+	--trait container.image-pull-policy=Always \
+	--runtime=camel-main
+
+k3s-deploy:
+	@kubectl apply -f ./target/kubernetes/kubernetes.yml
+	@$(CAMEL_CMD) kubernetes logs --name rest-oauth
+
+k3s-delete:
+	@$(CAMEL_CMD) kubernetes delete --name rest-oauth
+
+k3s-run: k3s-fetch-cert
+	@$(CAMEL_CMD) kubernetes run rest-oauth-files/* tls/* --$(RUN_MODE) \
+	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
+	--gav=examples:rest-oauth:1.0.0 \
+	--property=camel.oauth.baseUri=https://keycloak.k3s/kc/realms/camel \
+	--property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
+	--property=camel.oauth.logout.redirectUri=http://127.0.0.1:8080/ \
+	--property=camel.oauth.clientId=camel-client \
+	--property=camel.oauth.clientSecret=camel-client-secret \
+	--property=ssl.truststore.certificates=tls/cluster.crt \
+	--image-registry k3s-registry:30443 \
+	--trait container.image-pull-policy=Always \
 	--runtime=camel-main
 
 # OpenShift ============================================================================================================
@@ -88,7 +139,7 @@ oce-delete:
 	@$(CAMEL_CMD) kubernetes delete --name rest-oauth
 
 oce-run: oce-fetch-cert
-	@$(CAMEL_CMD) kubernetes run platform-http-files/* tls/* --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run rest-oauth-files/* tls/* --$(RUN_MODE) \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
 	--property=camel.oauth.baseUri=https://keycloak.$(OPENSHIFT_HOSTNAME)/realms/camel \

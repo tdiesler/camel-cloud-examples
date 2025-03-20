@@ -14,7 +14,11 @@ clean:
 k8s-package: clean k8s-export
 	@./mvnw clean package
 
-k8s-export:
+k8s-fetch-cert:
+	@mkdir -p tls
+	@echo -n | openssl s_client -connect keycloak.local:443 | openssl x509 > tls/cluster.crt
+
+k8s-export: k8s-fetch-cert
 	@$(CAMEL_CMD) kubernetes export platform-http-files/* tls/* \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
@@ -37,7 +41,7 @@ k8s-deploy:
 k8s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name platform-http-oauth
 
-k8s-run:
+k8s-run: k8s-fetch-cert
 	@$(CAMEL_CMD) kubernetes run platform-http-files/* tls/* --$(RUN_MODE) \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
@@ -59,7 +63,11 @@ k3s-package: clean k3s-export
 	# Alternatively: docker login k3s-registry:30443
 	@./mvnw clean package
 
-k3s-export:
+k3s-fetch-cert:
+	@mkdir -p tls
+	@echo -n | openssl s_client -connect keycloak.k3s:443 | openssl x509 > tls/cluster.crt
+
+k3s-export: k3s-fetch-cert
 	@$(CAMEL_CMD) kubernetes export platform-http-files/* tls/* \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
@@ -81,7 +89,7 @@ k3s-deploy:
 k3s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name platform-http-oauth
 
-k3s-run:
+k3s-run: k3s-fetch-cert
 	@$(CAMEL_CMD) kubernetes run platform-http-files/* tls/* --$(RUN_MODE) \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
