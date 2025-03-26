@@ -35,7 +35,7 @@ k8s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name kafka-oauth
 
 k8s-run: k8s-fetch-cert
-	@$(CAMEL_CMD) kubernetes run kafka-oauth-files/* tls/* --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run --quiet=false kafka-oauth-files/* tls/* --$(RUN_MODE) \
 	--dep=io.strimzi:kafka-oauth-client:0.15.0 \
 	--gav=examples:kafka-oauth:1.0.0 \
 	--property=ssl.truststore.certificates=tls/cluster.crt \

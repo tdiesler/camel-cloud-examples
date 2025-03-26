@@ -31,7 +31,7 @@ k8s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name platform-http
 
 k8s-run:
-	@$(CAMEL_CMD) kubernetes run platform-http-files/* --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run --quiet=false platform-http-files/* --$(RUN_MODE) \
 	--property camel.jbang.jkubeFiles=platform-http-deployment-template.yaml,platform-http-extra-service.yaml \
 	--gav=examples:platform-http:1.0.0 \
 	--trait container.image-pull-policy=IfNotPresent \
@@ -63,7 +63,7 @@ k3s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name platform-http
 
 k3s-run:
-	@$(CAMEL_CMD) kubernetes run platform-http-files/* --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run --quiet=false platform-http-files/* --$(RUN_MODE) \
 	--gav=examples:platform-http:1.0.0 \
 	--image-registry k3s-registry:30443 \
 	--trait container.image-pull-policy=Always \
@@ -96,7 +96,7 @@ oce-delete:
 	@$(CAMEL_CMD) kubernetes delete --name platform-http
 
 oce-run:
-	@$(CAMEL_CMD) kubernetes run platform-http-files/* --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run --quiet=false platform-http-files/* --$(RUN_MODE) \
 	--gav=examples:platform-http:1.0.0 \
 	--image-registry image-registry.openshift-image-registry.svc:5000 \
 	--trait container.image-pull-policy=IfNotPresent \

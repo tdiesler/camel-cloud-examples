@@ -29,7 +29,7 @@ k8s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name btcprice
 
 k8s-run:
-	@$(CAMEL_CMD) kubernetes run btcprice-route.yaml --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run --quiet=false btcprice-route.yaml --$(RUN_MODE) \
 	--gav=examples:btcprice:1.0.0 \
 	--image-builder=docker \
 	--image-push=false \

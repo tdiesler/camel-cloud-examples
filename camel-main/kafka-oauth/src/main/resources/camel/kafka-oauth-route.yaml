@@ -15,7 +15,7 @@
 #   Keycloak: keycloak:8080
 #   Kafka:    kafka:9093
 #
-#   jbang camel kubernetes run kafka-oauth-route.yaml \
+#   jbang camel kubernetes run --quiet=false kafka-oauth-route.yaml \
 #	--dep=io.strimzi:kafka-oauth-client:0.15.0 \
 #	--gav=examples:kafka-oauth:1.0.0 \
 #	--image-builder=docker \

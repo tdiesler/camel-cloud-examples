@@ -10,11 +10,11 @@
 #      jbang camel kubernetes export platform-http-files/* \
 #           --dep=org.apache.camel.cloud:camel-oauth:0.1.0-SNAPSHOT \
 #           --gav=examples:platform-http-oauth:1.0.0 \
-#           --property=camel.oauth.baseUri=https://keycloak.local/kc/realms/camel \
-#           --property=camel.oauth.redirectUri=http://127.0.0.1:8080/auth \
-#           --property=camel.oauth.logout.redirectUri=http://127.0.0.1:8080/ \
-#           --property=camel.oauth.clientId=camel-client \
-#           --property=camel.oauth.clientSecret=camel-client-secret \
+#           --property=camel.oauth.base-uri=https://keycloak.local/kc/realms/camel \
+#           --property=camel.oauth.redirect-uri=http://127.0.0.1:8080/auth \
+#           --property=camel.oauth.logout.redirect-uri=http://127.0.0.1:8080/ \
+#           --property=camel.oauth.client-id=camel-client \
+#           --property=camel.oauth.client-secret=camel-client-secret \
 #           --trait container.image-pull-policy=IfNotPresent \
 #           --ignore-loading-error=true \
 #           --image-builder=docker \
