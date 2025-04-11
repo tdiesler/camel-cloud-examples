@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: amq7-oauth
+    app.kubernetes.io/runtime: camel
+  name: amq7-oauth
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: amq7-oauth
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: amq7-oauth
+    spec:
+      containers:
+      - env:
+        - name: SSL_TRUSTSTORE_CERTIFICATES
+          value: tls/cluster.crt
+        imagePullPolicy: IfNotPresent
+        name: amq7-oauth
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP

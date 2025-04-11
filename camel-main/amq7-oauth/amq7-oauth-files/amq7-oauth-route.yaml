@@ -1,0 +1,13 @@
+- from:
+    uri: "timer:yaml"
+    parameters:
+      period: "2000"
+    steps:
+      - setBody:
+          simple: "Hello Camel from ${routeId}"
+      - to: "sjms2:queue:ExampleQueue"
+
+- from:
+    uri: "sjms2:queue:ExampleQueue"
+    steps:
+      - log: "${body}"

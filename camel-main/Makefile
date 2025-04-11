@@ -1,5 +1,6 @@
 
 SUBDIRS := \
+    amq7-oauth \
     bitcoin-source \
     kafka-oauth \
     platform-http-oauth \

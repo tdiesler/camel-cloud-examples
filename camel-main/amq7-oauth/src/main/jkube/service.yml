@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: amq7-oauth
+    app.kubernetes.io/runtime: camel
+  name: amq7-oauth
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selector:
+    app.kubernetes.io/name: amq7-oauth
+  type: ClusterIP
