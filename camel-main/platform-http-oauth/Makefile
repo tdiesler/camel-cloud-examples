@@ -42,7 +42,7 @@ k8s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name platform-http-oauth
 
 k8s-run: k8s-fetch-cert
-	@$(CAMEL_CMD) kubernetes run --quiet=false platform-http-files/* tls/* --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run --verbose=true platform-http-files/* tls/* --$(RUN_MODE) \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.local/kc/realms/camel \
@@ -90,7 +90,7 @@ k3s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name platform-http-oauth
 
 k3s-run: k3s-fetch-cert
-	@$(CAMEL_CMD) kubernetes run --quiet=false platform-http-files/* tls/* --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run --verbose=true platform-http-files/* tls/* --$(RUN_MODE) \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.k3s/kc/realms/camel \
@@ -141,7 +141,7 @@ oce-delete:
 	@$(CAMEL_CMD) kubernetes delete --name platform-http-oauth
 
 oce-run: oce-fetch-cert
-	@$(CAMEL_CMD) kubernetes run --quiet=false platform-http-files/* tls/* --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run --verbose=true platform-http-files/* tls/* --$(RUN_MODE) \
 	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.$(OPENSHIFT_HOSTNAME)/realms/camel \

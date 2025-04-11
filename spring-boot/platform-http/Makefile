@@ -31,7 +31,7 @@ k8s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name platform-http
 
 k8s-run:
-	@$(CAMEL_CMD) kubernetes run --quiet=false platform-http-files/* --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run --verbose=true platform-http-files/* --$(RUN_MODE) \
 	--gav=examples:platform-http:1.0.0 \
 	--trait container.image-pull-policy=IfNotPresent \
 	--trait service.type=NodePort \
@@ -62,7 +62,7 @@ k3s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name platform-http
 
 k3s-run:
-	@$(CAMEL_CMD) kubernetes run --quiet=false platform-http-files/* --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run --verbose=true platform-http-files/* --$(RUN_MODE) \
 	--gav=examples:platform-http:1.0.0 \
 	--image-registry k3s-registry:30443 \
 	--trait container.image-pull-policy=Always \
@@ -95,7 +95,7 @@ oce-delete:
 	@kubectl delete --all -f ./target/kubernetes/openshift.yml
 
 oce-run:
-	@$(CAMEL_CMD) kubernetes run --quiet=false platform-http-files/* --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run --verbose=true platform-http-files/* --$(RUN_MODE) \
 	--gav=examples:platform-http:1.0.0 \
 	--image-registry image-registry.openshift-image-registry.svc:5000 \
 	--trait container.image-pull-policy=IfNotPresent \

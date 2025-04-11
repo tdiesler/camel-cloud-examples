@@ -15,8 +15,7 @@ spec:
         app.kubernetes.io/name: btcprice
     spec:
       containers:
-      - image: examples/btcprice:1.0.0
-        name: btcprice
+      - name: btcprice
         ports:
         - containerPort: 8080
           name: http

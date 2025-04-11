@@ -15,8 +15,7 @@ spec:
         app.kubernetes.io/name: timer-log
     spec:
       containers:
-      - image: examples/timer-log:1.0.0
-        imagePullPolicy: IfNotPresent
+      - imagePullPolicy: IfNotPresent
         name: timer-log
         ports:
         - containerPort: 8080

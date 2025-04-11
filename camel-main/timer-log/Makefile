@@ -31,7 +31,7 @@ k8s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name timer-log
 
 k8s-run:
-	@$(CAMEL_CMD) kubernetes run --quiet=false timer-log-route.yaml --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run --verbose=true timer-log-route.yaml --$(RUN_MODE) \
 	--gav=examples:timer-log:1.0.0 \
 	--trait container.image-pull-policy=IfNotPresent \
 	--trait service.type=NodePort \
@@ -62,7 +62,7 @@ k3s-delete:
 	@$(CAMEL_CMD) kubernetes delete --name timer-log
 
 k3s-run:
-	@$(CAMEL_CMD) kubernetes run --quiet=false timer-log-route.yaml --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run --verbose=true timer-log-route.yaml --$(RUN_MODE) \
 	--gav=examples:timer-log:1.0.0 \
 	--image-registry k3s-registry:30443 \
 	--trait container.image-pull-policy=Always \
@@ -95,7 +95,7 @@ oce-delete:
 	@$(CAMEL_CMD) kubernetes delete --name timer-log
 
 oce-run:
-	@$(CAMEL_CMD) kubernetes run --quiet=false timer-log-route.yaml --$(RUN_MODE) \
+	@$(CAMEL_CMD) kubernetes run --verbose=true timer-log-route.yaml --$(RUN_MODE) \
 	--gav=examples:timer-log:1.0.0 \
 	--image-registry image-registry.openshift-image-registry.svc:5000 \
 	--trait container.image-pull-policy=IfNotPresent \
