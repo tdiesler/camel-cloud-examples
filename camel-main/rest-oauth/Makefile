@@ -11,9 +11,6 @@ clean:
 
 # Local Kubernetes (e.g. DockerDesktop) ================================================================================
 #
-# podName=$(kubectl get pod -l app.kubernetes.io/name=rest-oauth -o jsonpath='{.items[0].metadata.name}')
-# kubectl port-forward ${podName} 8080:8080
-#
 k8s-package: clean k8s-export
 	@./mvnw clean package
 
@@ -23,13 +20,16 @@ k8s-fetch-cert:
 
 k8s-export: k8s-fetch-cert
 	@$(CAMEL_CMD) kubernetes export rest-oauth-files/* tls/* \
-	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
+	--dep=org.apache.camel:camel-oauth:4.12.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.local/kc/realms/camel \
 	--property=camel.oauth.client-id=camel-client \
 	--property=camel.oauth.client-secret=camel-client-secret \
 	--property=ssl.truststore.certificates=tls/cluster.crt \
-	--trait container.image-pull-policy=IfNotPresent \
+	--trait ingress.enabled=true \
+	--trait ingress.host=example.local \
+	--trait ingress.ingressClass=traefik \
+	--trait ingress.tls-secret-name=traefik-tls \
 	--ignore-loading-error=true \
 	--image-builder=docker \
 	--image-push=false \
@@ -44,13 +44,16 @@ k8s-delete:
 
 k8s-run: k8s-fetch-cert
 	@$(CAMEL_CMD) kubernetes run --verbose=true rest-oauth-files/* tls/* --$(RUN_MODE) \
-	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
+	--dep=org.apache.camel:camel-oauth:4.12.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.local/kc/realms/camel \
 	--property=camel.oauth.client-id=camel-client \
 	--property=camel.oauth.client-secret=camel-client-secret \
 	--property=ssl.truststore.certificates=tls/cluster.crt \
-	--trait container.image-pull-policy=IfNotPresent \
+	--trait ingress.enabled=true \
+	--trait ingress.host=example.local \
+	--trait ingress.ingressClass=traefik \
+	--trait ingress.tls-secret-name=traefik-tls \
 	--image-builder=docker \
 	--image-push=false \
 	--runtime=camel-main
@@ -59,7 +62,7 @@ k8s-run: k8s-fetch-cert
 
 k3s-package: clean k3s-export
 	# -Djkube.docker.username=<registry-user> -Djkube.docker.password=<registry-password>
-	# Alternatively: docker login k3s-registry:30443
+	# Alternatively: docker login registry.k3s:30443
 	@./mvnw clean package
 
 k3s-fetch-cert:
@@ -68,17 +71,19 @@ k3s-fetch-cert:
 
 k3s-export: k3s-fetch-cert
 	@$(CAMEL_CMD) kubernetes export rest-oauth-files/* tls/* \
-	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
+	--dep=org.apache.camel:camel-oauth:4.12.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.k3s/kc/realms/camel \
-	--property=camel.oauth.redirect-uri=http://127.0.0.1:8080/auth \
-	--property=camel.oauth.logout.redirect-uri=http://127.0.0.1:8080/ \
 	--property=camel.oauth.client-id=camel-client \
 	--property=camel.oauth.client-secret=camel-client-secret \
 	--property=ssl.truststore.certificates=tls/cluster.crt \
 	--ignore-loading-error=true \
-	--image-registry k3s-registry:30443 \
+	--image-registry registry.k3s:30443 \
 	--trait container.image-pull-policy=Always \
+	--trait ingress.enabled=true \
+	--trait ingress.host=example.k3s \
+	--trait ingress.ingressClass=traefik \
+	--trait ingress.tls-secret-name=traefik-tls \
 	--runtime=camel-main
 
 k3s-deploy:
@@ -90,16 +95,18 @@ k3s-delete:
 
 k3s-run: k3s-fetch-cert
 	@$(CAMEL_CMD) kubernetes run --verbose=true rest-oauth-files/* tls/* --$(RUN_MODE) \
-	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
+	--dep=org.apache.camel:camel-oauth:4.12.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.k3s/kc/realms/camel \
-	--property=camel.oauth.redirect-uri=http://127.0.0.1:8080/auth \
-	--property=camel.oauth.logout.redirect-uri=http://127.0.0.1:8080/ \
 	--property=camel.oauth.client-id=camel-client \
 	--property=camel.oauth.client-secret=camel-client-secret \
 	--property=ssl.truststore.certificates=tls/cluster.crt \
-	--image-registry k3s-registry:30443 \
+	--image-registry registry.k3s:30443 \
 	--trait container.image-pull-policy=Always \
+	--trait ingress.enabled=true \
+	--trait ingress.host=example.k3s \
+	--trait ingress.ingressClass=traefik \
+	--trait ingress.tls-secret-name=traefik-tls \
 	--runtime=camel-main
 
 # OpenShift ============================================================================================================
@@ -118,16 +125,18 @@ oce-fetch-cert:
 
 oce-export: oce-fetch-cert
 	@$(CAMEL_CMD) kubernetes export rest-oauth-files/* tls/* \
-	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
+	--dep=org.apache.camel:camel-oauth:4.12.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.$(OPENSHIFT_HOSTNAME)/realms/camel \
-	--property=camel.oauth.redirect-uri=http://127.0.0.1:8080/auth \
-	--property=camel.oauth.logout.redirect-uri=http://127.0.0.1:8080/ \
 	--property=camel.oauth.client-id=camel-client \
 	--property=camel.oauth.client-secret=camel-client-secret \
 	--property=ssl.truststore.certificates=tls/cluster.crt \
 	--image-registry image-registry.openshift-image-registry.svc:5000 \
 	--trait container.image-pull-policy=Always \
+	--trait route.enabled=true \
+	--trait route.host=rest.$(OPENSHIFT_HOSTNAME) \
+	--trait route.tls-insecure-edge-termination-policy=Redirect \
+	--trait route.tls-termination=edge \
 	--ignore-loading-error=true \
 	--cluster-type=openshift \
 	--runtime=camel-main
@@ -141,15 +150,17 @@ oce-delete:
 
 oce-run: oce-fetch-cert
 	@$(CAMEL_CMD) kubernetes run --verbose=true rest-oauth-files/* tls/* --$(RUN_MODE) \
-	--dep=org.apache.camel:camel-oauth:4.11.0-SNAPSHOT \
+	--dep=org.apache.camel:camel-oauth:4.12.0-SNAPSHOT \
 	--gav=examples:rest-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.$(OPENSHIFT_HOSTNAME)/realms/camel \
-	--property=camel.oauth.redirect-uri=http://127.0.0.1:8080/auth \
-	--property=camel.oauth.logout.redirect-uri=http://127.0.0.1:8080/ \
 	--property=camel.oauth.client-id=camel-client \
 	--property=camel.oauth.client-secret=camel-client-secret \
 	--property=ssl.truststore.certificates=tls/cluster.crt \
 	--image-registry image-registry.openshift-image-registry.svc:5000 \
 	--trait container.image-pull-policy=Always \
+	--trait route.enabled=true \
+	--trait route.host=rest.$(OPENSHIFT_HOSTNAME) \
+	--trait route.tls-insecure-edge-termination-policy=Redirect \
+	--trait route.tls-termination=edge \
 	--cluster-type=openshift \
 	--runtime=camel-main

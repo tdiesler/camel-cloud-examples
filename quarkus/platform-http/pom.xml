@@ -9,7 +9,7 @@
     <version>1.0.0</version>
 
     <properties>
-        <project.build.outputTimestamp>2025-04-11T10:55:36Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-04-16T14:59:33Z</project.build.outputTimestamp>
         <compiler-plugin.version>3.13.0</compiler-plugin.version>
         <failsafe.useModulePath>false</failsafe.useModulePath>
         <maven.compiler.release>17</maven.compiler.release>
@@ -20,7 +20,6 @@
         <quarkus.platform.version>3.21.1</quarkus.platform.version>
         <jkube.image.name>examples/platform-http:1.0.0</jkube.image.name>
         <jkube.container-image.name>examples/platform-http:1.0.0</jkube.container-image.name>
-        <jkube.container-image.imagePullPolicy>IfNotPresent</jkube.container-image.imagePullPolicy>
         <jkube.skip.push>true</jkube.skip.push>
         <jkube.maven.plugin>kubernetes-maven-plugin</jkube.maven.plugin>
         <jkube.container-image.from>eclipse-temurin:17</jkube.container-image.from>

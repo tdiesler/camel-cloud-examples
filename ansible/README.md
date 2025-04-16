@@ -1,6 +1,8 @@
 
 ## Run the Playbook
 
+After setting the VPS connect parameters, run ...
+
 ```
 ansible-playbook \
     -i ansible/hosts.ini \

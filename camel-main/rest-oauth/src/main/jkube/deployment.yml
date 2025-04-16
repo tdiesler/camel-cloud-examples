@@ -18,7 +18,6 @@ spec:
       - env:
         - name: SSL_TRUSTSTORE_CERTIFICATES
           value: tls/cluster.crt
-        imagePullPolicy: IfNotPresent
         name: rest-oauth
         ports:
         - containerPort: 8080

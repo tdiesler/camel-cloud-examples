@@ -15,8 +15,7 @@ spec:
         app.kubernetes.io/name: platform-http
     spec:
       containers:
-      - imagePullPolicy: IfNotPresent
-        name: platform-http
+      - name: platform-http
         ports:
         - containerPort: 8080
           name: http

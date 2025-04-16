@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: platform-http
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: example.local
+    http:
+      paths:
+      - backend:
+          service:
+            name: platform-http
+            port:
+              name: http
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - example.local
+    secretName: traefik-tls

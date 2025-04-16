@@ -18,7 +18,6 @@ k8s-export:
 	@$(CAMEL_CMD) kubernetes export timer-log-files/* \
 	--gav=examples:timer-log:1.0.0 \
 	--trait container.image-pull-policy=IfNotPresent \
-	--trait service.type=NodePort \
 	--image-builder=docker \
 	--image-push=false \
 	--runtime=spring-boot
@@ -34,7 +33,6 @@ k8s-run:
 	@$(CAMEL_CMD) kubernetes run --verbose=true timer-log-files/* --$(RUN_MODE) \
 	--gav=examples:timer-log:1.0.0 \
 	--trait container.image-pull-policy=IfNotPresent \
-	--trait service.type=NodePort \
 	--image-builder=docker \
 	--image-push=false \
 	--runtime=spring-boot
@@ -43,15 +41,14 @@ k8s-run:
 
 k3s-package: clean k3s-export
 	# -Djkube.docker.username=<registry-user> -Djkube.docker.password=<registry-password>
-	# Alternatively: docker login k3s-registry:30443
+	# Alternatively: docker login registry.k3s:30443
 	@./mvnw clean package
 
 k3s-export:
 	@$(CAMEL_CMD) kubernetes export timer-log-files/* \
 	--gav=examples:timer-log:1.0.0 \
-	--image-registry k3s-registry:30443 \
+	--image-registry registry.k3s:30443 \
 	--trait container.image-pull-policy=Always \
-	--trait service.type=NodePort \
 	--runtime=spring-boot
 
 k3s-deploy:
@@ -64,9 +61,8 @@ k3s-delete:
 k3s-run:
 	@$(CAMEL_CMD) kubernetes run --verbose=true timer-log-files/* --$(RUN_MODE) \
 	--gav=examples:timer-log:1.0.0 \
-	--image-registry k3s-registry:30443 \
+	--image-registry registry.k3s:30443 \
 	--trait container.image-pull-policy=Always \
-	--trait service.type=NodePort \
 	--runtime=spring-boot
 
 # OpenShift ============================================================================================================

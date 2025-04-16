@@ -7,7 +7,7 @@
   become: yes
   vars:
     user_home: "/home/{{ ansible_user }}"
-    registry_spec: "k3s-registry:{{ REGISTRY_PORT }}"
+    registry_spec: "registry.k3s:{{ REGISTRY_PORT }}"
 
   tasks:
     - name: Get external IP address
@@ -54,7 +54,7 @@
 
           [ alt_names ]
           DNS.1 = {{ ansible_hostname }}
-          DNS.2 = k3s-registry
+          DNS.2 = registry.k3s
           IP.1  = {{ external_ip.stdout }}
         mode: '0644'
 

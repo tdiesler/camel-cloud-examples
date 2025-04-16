@@ -19,7 +19,7 @@
     - name: Append {{ ansible_hostname }} to /etc/hosts
       ansible.builtin.lineinfile:
         path: /etc/hosts
-        line: "{{ external_ip.stdout }} {{ ansible_hostname }} {{ ansible_hostname }}-registry k3s-registry"
+        line: "{{ external_ip.stdout }} {{ ansible_hostname }} {{ ansible_hostname }}-registry registry.k3s"
         create: yes
       register: append_etc_host
 

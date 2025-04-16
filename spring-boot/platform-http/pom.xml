@@ -18,7 +18,6 @@
         <java.version>17</java.version>
         <jkube.image.name>examples/platform-http:1.0.0</jkube.image.name>
         <jkube.container-image.name>examples/platform-http:1.0.0</jkube.container-image.name>
-        <jkube.container-image.imagePullPolicy>IfNotPresent</jkube.container-image.imagePullPolicy>
         <jkube.skip.push>true</jkube.skip.push>
         <jkube.maven.plugin>kubernetes-maven-plugin</jkube.maven.plugin>
         <jkube.container-image.from>eclipse-temurin:17</jkube.container-image.from>

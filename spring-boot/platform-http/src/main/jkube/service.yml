@@ -13,4 +13,4 @@ spec:
     targetPort: http
   selector:
     app.kubernetes.io/name: platform-http
-  type: NodePort
+  type: ClusterIP
