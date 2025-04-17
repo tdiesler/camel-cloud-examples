@@ -9,7 +9,7 @@
     <version>1.0.0</version>
 
     <properties>
-        <project.build.outputTimestamp>2025-04-16T14:59:46Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-04-17T17:21:37Z</project.build.outputTimestamp>
         <compiler-plugin.version>3.13.0</compiler-plugin.version>
         <failsafe.useModulePath>false</failsafe.useModulePath>
         <maven.compiler.release>17</maven.compiler.release>
@@ -17,7 +17,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.version>3.21.1</quarkus.platform.version>
+        <quarkus.platform.version>3.21.3</quarkus.platform.version>
         <jkube.image.name>examples/platform-http-oauth:1.0.0</jkube.image.name>
         <jkube.container-image.name>examples/platform-http-oauth:1.0.0</jkube.container-image.name>
         <jkube.skip.push>true</jkube.skip.push>

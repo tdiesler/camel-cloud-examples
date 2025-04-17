@@ -13,9 +13,6 @@ clean:
 
 # Local Kubernetes (e.g. DockerDesktop) ================================================================================
 #
-# podName=$(kubectl get pod -l app.kubernetes.io/name=platform-http-oauth -o jsonpath='{.items[0].metadata.name}')
-# kubectl port-forward ${podName} 8080:8080
-#
 k8s-package: clean k8s-export
 	@./mvnw clean package
 
@@ -28,8 +25,8 @@ k8s-export: k8s-fetch-cert
 	--dep=org.apache.camel:camel-oauth:4.12.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.local/kc/realms/camel \
-	--property=camel.oauth.redirect-uri=http://127.0.0.1:8080/auth \
-	--property=camel.oauth.logout.redirect-uri=http://127.0.0.1:8080/ \
+	--property=camel.oauth.redirect-uri=https://example.local/auth \
+	--property=camel.oauth.logout.redirect-uri=https://example.local/ \
 	--property=camel.oauth.client-id=camel-client \
 	--property=camel.oauth.client-secret=camel-client-secret \
 	--property=ssl.truststore.certificates=tls/cluster.crt \
@@ -55,8 +52,8 @@ k8s-run: k8s-fetch-cert
 	--dep=org.apache.camel:camel-oauth:4.12.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.local/kc/realms/camel \
-	--property=camel.oauth.redirect-uri=http://127.0.0.1:8080/auth \
-	--property=camel.oauth.logout.redirect-uri=http://127.0.0.1:8080/ \
+	--property=camel.oauth.redirect-uri=https://example.local/auth \
+	--property=camel.oauth.logout.redirect-uri=https://example.local/ \
 	--property=camel.oauth.client-id=camel-client \
 	--property=camel.oauth.client-secret=camel-client-secret \
 	--property=ssl.truststore.certificates=tls/cluster.crt \
@@ -88,8 +85,8 @@ k3s-export: k3s-fetch-cert
 	--dep=org.apache.camel:camel-oauth:4.12.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.k3s/kc/realms/camel \
-	--property=camel.oauth.redirect-uri=http://127.0.0.1:8080/auth \
-	--property=camel.oauth.logout.redirect-uri=http://127.0.0.1:8080/ \
+	--property=camel.oauth.redirect-uri=https://example.k3s/auth \
+	--property=camel.oauth.logout.redirect-uri=https://example.k3s/ \
 	--property=camel.oauth.client-id=camel-client \
 	--property=camel.oauth.client-secret=camel-client-secret \
 	--property=ssl.truststore.certificates=tls/cluster.crt \
@@ -114,8 +111,8 @@ k3s-run: k3s-fetch-cert
 	--dep=org.apache.camel:camel-oauth:4.12.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.k3s/kc/realms/camel \
-	--property=camel.oauth.redirect-uri=http://127.0.0.1:8080/auth \
-	--property=camel.oauth.logout.redirect-uri=http://127.0.0.1:8080/ \
+	--property=camel.oauth.redirect-uri=https://example.k3s/auth \
+	--property=camel.oauth.logout.redirect-uri=https://example.k3s/ \
 	--property=camel.oauth.client-id=camel-client \
 	--property=camel.oauth.client-secret=camel-client-secret \
 	--property=ssl.truststore.certificates=tls/cluster.crt \
@@ -146,8 +143,8 @@ oce-export: oce-fetch-cert
 	--dep=org.apache.camel:camel-oauth:4.12.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.$(OPENSHIFT_HOSTNAME)/realms/camel \
-	--property=camel.oauth.redirect-uri=http://127.0.0.1:8080/auth \
-	--property=camel.oauth.logout.redirect-uri=http://127.0.0.1:8080/ \
+	--property=camel.oauth.redirect-uri=https://webapp.$(OPENSHIFT_HOSTNAME)/auth \
+	--property=camel.oauth.logout.redirect-uri=https://webapp.$(OPENSHIFT_HOSTNAME)/ \
 	--property=camel.oauth.client-id=camel-client \
 	--property=camel.oauth.client-secret=camel-client-secret \
 	--property=ssl.truststore.certificates=tls/cluster.crt \
@@ -173,8 +170,8 @@ oce-run: oce-fetch-cert
 	--dep=org.apache.camel:camel-oauth:4.12.0-SNAPSHOT \
 	--gav=examples:platform-http-oauth:1.0.0 \
 	--property=camel.oauth.base-uri=https://keycloak.$(OPENSHIFT_HOSTNAME)/realms/camel \
-	--property=camel.oauth.redirect-uri=http://127.0.0.1:8080/auth \
-	--property=camel.oauth.logout.redirect-uri=http://127.0.0.1:8080/ \
+	--property=camel.oauth.redirect-uri=https://webapp.$(OPENSHIFT_HOSTNAME)/auth \
+	--property=camel.oauth.logout.redirect-uri=https://webapp.$(OPENSHIFT_HOSTNAME)/ \
 	--property=camel.oauth.client-id=camel-client \
 	--property=camel.oauth.client-secret=camel-client-secret \
 	--property=ssl.truststore.certificates=tls/cluster.crt \
